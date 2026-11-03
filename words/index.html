@@ -86,14 +86,14 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.27 · Nov 3 · not live</div>
+    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.28 · Nov 3 · not live</div>
     <div id="rc"></div>
   </div>
 </div>
 <div id="cv"><div class="cm"><h1>Ledder</h1><p>A word path through <span id="cvt">seven</span> rows</p>
 <div class="cm-t"><span>M</span><span>A</span><span>T</span></div>
 <button id="cvP">Play</button><button id="cvH">How to Play</button></div>
-<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.27 · Nov 3 · test</div></div>
+<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.28 · Nov 3 · test</div></div>
 <div id="hp"><div class="hc"><h2>How to Play Ledder</h2>
 <ul><li><b>Earn points</b> for words on the path through the rows. Three stars to reach, set for each day's board.</li>
 <li><b>Start</b> your first word on a letter in the top row. The board lights up once you pick one.</li>
@@ -118,7 +118,7 @@ function pts(n){return {3:3,4:5,5:8,6:12,7:17}[n]||17+(n-7)*6}
 function kids(W,l,i){if(l+1>=W.length)return [];var k=[i-1,i,i+1];return k.filter(function(j){return j>=0&&j<W[l+1]})}
 function trk(a,b,on){return '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="'+(on?'#e8a817':'#b9ae95')+'" stroke-width="'+(on?5:2)+'" stroke-linecap="round"/>'}
 /* Solvers. Both run in the page on load, so the five puzzles are checked by the same code the game uses. */
-function solveA(P){var W=P.w,B=P.b,all={},com={},deep={};function go(l,i,s){s+=B[l][i];if(s.length>=3&&ALL.has(s)){all[s]=1;if(CS.has(s)){com[s]=1;if(l===W.length-1)deep[s]=1}}kids(W,l,i).forEach(function(j){go(l+1,j,s)})}for(var i=0;i<W[0];i++)go(0,i,'');return {all:Object.keys(all),common:Object.keys(com),deep:Object.keys(deep)}}
+function solveA(P){var W=P.w,B=P.b,all={},com={},deep={};function go(l,i,s){s+=B[l][i];if(s.length>=3&&ALL.has(s)){all[s]=1;if(CS.has(s)){com[s]=1;if(l===W.length-1)deep[s]=1}}kids(W,l,i).forEach(function(j){go(l+1,j,s)})}for(var i=0;i<W[0];i++)go(0,i,'');function gu(l,i,s){s+=B[l][i];if(s.length>=3&&ALL.has(s)){all[s]=1;if(CS.has(s))com[s]=1}if(l>0)ups(W,l,i).forEach(function(j){gu(l-1,j,s)})}for(var i2=0;i2<W[0];i2++)gu(W.length-1,i2,'');return {all:Object.keys(all),common:Object.keys(com),deep:Object.keys(deep)}}
 function cnt(s){var c={};for(var i=0;i<s.length;i++)c[s[i]]=(c[s[i]]||0)+1;return c}
 function fits(w,c){var d={};for(var i=0;i<w.length;i++){var x=w[i];d[x]=(d[x]||0)+1;if(d[x]>(c[x]||0))return false}return true}
 function sub(s,w){var a=s.split('');for(var i=0;i<w.length;i++)a.splice(a.indexOf(w[i]),1);return a.join('')}
