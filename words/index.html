@@ -89,6 +89,8 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 .st.wig{background:#f8d4cf!important;border-color:var(--red);color:var(--red);animation:wg .36s 2}@keyframes wg{25%{transform:translate(calc(-50% - 4px),-50%) rotate(-3deg)}75%{transform:translate(calc(-50% + 4px),-50%) rotate(3deg)}}
 #st3{position:fixed;inset:0;z-index:8;display:none;align-items:center;justify-content:center;background:rgba(244,239,225,.8);padding:16px}#st3.show{display:flex}
 .s3{font:800 30px/1 var(--sans);color:#a67c1a;letter-spacing:.06em}#st3 p{margin:8px 0 12px}.fc button.s3d{margin-top:8px;background:var(--card);color:var(--ink);border:2px solid var(--ink)}
+#wlp{flex:none;border-bottom:2px dashed var(--ink);padding-bottom:6px;margin-bottom:6px}#wlp .ln{font-size:13.5px}#wlp .ln span:first-child{color:#7a5a12}#wlp .lg{opacity:.55}
+.st,.nums b,.cm-t span,.tot{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
 </style>
 </head>
 <body>
@@ -99,14 +101,14 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.39 · Nov 3 · not live</div>
+    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.40 · Nov 3 · not live</div>
     <div id="rc"></div>
   </div>
 </div>
 <div id="cv"><div class="cm"><h1>Ledder</h1><p>A word path through <span id="cvt">seven</span> rows</p>
 <div class="cm-t"><span>M</span><span>A</span><span>T</span></div>
 <button id="cvP">Play</button><button id="cvH">How to Play</button></div>
-<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.39 · Nov 3 · test</div></div>
+<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.40 · Nov 3 · test</div></div>
 <div id="hp"><div class="hc"><h2>How to Play Ledder</h2>
 <div class="hl"><b>Goal</b><span>Score points. Earn 3 stars.</span></div>
 <div class="hl"><b>Start</b><span>Your first word starts in the top row.</span></div>
@@ -118,7 +120,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 <div class="hl"><b>Stuck?</b><span>You get one Undo a day. The undone word is gone. Or End the game.</span></div>
 <div class="rb"><button id="hpD">Demo</button><button id="hpC" class="go">Got it</button></div></div></div>
 <div id="fr"><div class="fc"><small id="frw"></small><h2>Free Start</h2><p>Begin your next word on any letter, going up or down.</p><button id="frB">Pick a letter</button></div></div>
-<div id="wl"><div class="wc"><h2>Your Words</h2><div id="wlb"></div><div id="wlt"></div><button id="wlC">Back to game</button></div></div>
+<div id="wl"><div class="wc"><h2>Your Words</h2><div id="wlp"></div><div id="wlb"></div><div id="wlt"></div><button id="wlC">Back to game</button></div></div>
 <div id="st3"><div class="fc"><div class="s3">★★★</div><h2 id="s3h">All 3 stars!</h2><small id="s3s"></small><p id="s3m"></p><button id="s3K">Keep going</button><button id="s3D" class="s3d">Complete</button></div></div>
 <div id="dm"><div id="dc"><span id="dt"></span><button id="dx">Close</button></div></div>
 <div id="turn">Turn your phone upright to play</div>
@@ -265,7 +267,7 @@ function demo(){$('hp').className='';dSave={s:SA[0],c:cur.A,m:mode,cv:$('cv').cl
   if(st[0]==='f'){st[1]();dTm=setTimeout(run,300);return}
   var q=st[1],k=0;(function nx(){if(tok!==dTok)return;if(k<q.length){tapA(q[k][0],q[k][1]);k++;dTm=setTimeout(nx,520);return}dTm=setTimeout(function(){if(tok!==dTok)return;subA();dTm=setTimeout(run,1500)},650)})()}
  run()}
-document.querySelector('.tix').onclick=function(){var s=A();if(s.done||dSave)return;var o=s.found.slice().reverse().map(function(f){return '<div class="ln'+(f.deep?' bon':'')+'"><span>'+f.w+(f.deep?' · Full Line':'')+'</span><i></i><span>'+(f.p+(f.deep?DEEPB:0))+'</span></div>'}).join('');$('wlb').innerHTML=o||'<div class="note">No words yet.</div>';$('wlt').innerHTML='<div class="ln tot"><span>'+s.found.length+' word'+(s.found.length===1?'':'s')+'</span><i></i><span>'+scoreA(s)+'</span></div>';$('wl').className='show'};$('wlC').onclick=function(){$('wl').className=''};
+document.querySelector('.tix').onclick=function(){var s=A();if(s.done||dSave)return;var o=s.found.slice().reverse().map(function(f){return '<div class="ln'+(f.deep?' bon':'')+'"><span>'+f.w+(f.deep?' · Full Line':'')+'</span><i></i><span>'+(f.p+(f.deep?DEEPB:0))+'</span></div>'}).join('');$('wlb').innerHTML=o||'<div class="note">No words yet.</div>';$('wlt').innerHTML='<div class="ln tot"><span>'+s.found.length+' word'+(s.found.length===1?'':'s')+'</span><i></i><span>'+scoreA(s)+'</span></div>';var sc0=scoreA(s),lv=AP[cur.A].s.concat([topL()]),nm=['★','★★','★★★','Top of the Ledder'],pr=lv.map(function(v,i){var got=sc0>=v||(i<3&&s.st>i)||(i===3&&s.top);return '<div class="ln'+(got?' lg':'')+'"><span>'+nm[i]+'</span><i></i><span>'+(got?'Done':(v-sc0)+' more')+'</span></div>'}).join('');$('wlp').innerHTML=pr+'<div class="ln"><span>Everyday words left</span><i></i><span>'+wordsLeft(s)+'</span></div>';$('wl').className='show'};$('wlC').onclick=function(){$('wl').className=''};
 $('s3K').onclick=function(){$('st3').className=''};$('s3D').onclick=function(){$('st3').className='';A().done=true;render()};
 $('frB').onclick=function(){$('fr').className=''};$('hpb').onclick=function(){$('hp').className='show'};$('hpC').onclick=function(){$('hp').className=''};$('hpD').onclick=demo;$('dx').onclick=demoEnd;
 function dayS(){return new Date().toLocaleDateString('en-CA',{timeZone:'America/New_York'})}
