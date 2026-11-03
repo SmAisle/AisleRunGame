@@ -80,6 +80,9 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 .st.fr{background:#fff1b8;box-shadow:0 0 0 2px var(--hi),2px 2px 0 rgba(0,0,0,.3)}.st.edge.fr{background:var(--hi)}
 #fr{position:fixed;inset:0;z-index:7;display:none;align-items:center;justify-content:center;background:rgba(244,239,225,.72);padding:16px}#fr.show{display:flex}
 .fc{width:100%;max-width:280px;background:var(--card);border:2px solid var(--ink);border-radius:4px;box-shadow:4px 4px 0 var(--ink);padding:16px;text-align:center}.fc small{display:block;font:800 11px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:#7a5a12}.fc h2{margin:4px 0;font:900 34px/1.15 var(--head)}.fc p{margin:0 0 12px;font:500 14px/1.3 var(--sans);color:var(--ink2)}.fc button{width:100%;height:42px;border:0;border-radius:4px;background:var(--ink);color:var(--card);font:800 14px var(--sans)}
+.hl{display:grid;grid-template-columns:76px 1fr;gap:8px;padding:6px 0;border-bottom:1px dotted var(--fade);font:500 14px/1.3 var(--sans)}.hl b{font-weight:800;color:#7a5a12;font-size:13px;line-height:1.4}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:1px 12px}.pg i{font-style:normal;display:flex;justify-content:space-between;font-size:13px}.pg u{text-decoration:none;font-weight:800}
+.hn{font:500 12.5px/1.3 var(--sans);color:var(--ink2);padding:5px 0;border-bottom:1px dotted var(--fade)}
 </style>
 </head>
 <body>
@@ -90,23 +93,23 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.30 · Nov 3 · not live</div>
+    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.31 · Nov 3 · not live</div>
     <div id="rc"></div>
   </div>
 </div>
 <div id="cv"><div class="cm"><h1>Ledder</h1><p>A word path through <span id="cvt">seven</span> rows</p>
 <div class="cm-t"><span>M</span><span>A</span><span>T</span></div>
 <button id="cvP">Play</button><button id="cvH">How to Play</button></div>
-<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.30 · Nov 3 · test</div></div>
+<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.31 · Nov 3 · test</div></div>
 <div id="hp"><div class="hc"><h2>How to Play Ledder</h2>
-<ul><li><b>Earn points</b> for words on the path through the rows. Three stars to reach, set for each day's board.</li>
-<li><b>Start</b> your first word on a letter in the top row. The board lights up once you pick one.</li>
-<li><b>Each letter</b> touches the last one, straight or one tile over, moving one row at a time.</li>
-<li><b>Your next word</b> starts on your last letter. The rest of that row locks.</li>
-<li><b id="hr1">Rows 3 to 5:</b> go up or down. <b id="hr2">Rows 2 and 6:</b> turn back the way you came.</li>
-<li><b>Reach the top or bottom row</b> for a free start: begin your next word on any letter, going up or down.</li>
-<li><b>Points:</b> 3 letters 1, 4 letters 5, 5 letters 8, 6 letters 12, 7 letters 17. Using all <span id="hr3">7</span> rows is a <b>Full Line</b>, +20. Easy endings like -S, -ED and -ING score less.</li>
-<li><b>Stuck?</b> Tap Stuck to Undo your last word, once a day. That word is gone for good. Or End the game.</li></ul>
+<div class="hl"><b>Goal</b><span>Score points. Earn 3 stars.</span></div>
+<div class="hl"><b>Start</b><span>Your first word starts in the top row.</span></div>
+<div class="hl"><b>Spell</b><span>Move one row at a time, to a letter straight ahead or one tile over.</span></div>
+<div class="hl"><b>Next word</b><span>Starts on your last letter. The rest of that row locks.<br>Rows 3 to 5: go up or down.<br>Rows 2 and 6: turn back.</span></div>
+<div class="hl"><b>Free start</b><span>Reach the top or bottom row. Your next word can start on any letter.</span></div>
+<div class="hl"><b>Points</b><span class="pg"><i>3 letters <u>1</u></i><i>4 letters <u>5</u></i><i>5 letters <u>8</u></i><i>6 letters <u>12</u></i><i>7 letters <u>17</u></i><i>All 7 rows <u>+20</u></i></span></div>
+<div class="hn">Easy endings like -S, -ED and -ING score less.</div>
+<div class="hl"><b>Stuck?</b><span>You get one Undo a day. The undone word is gone. Or End the game.</span></div>
 <div class="rb"><button id="hpD">Demo</button><button id="hpC" class="go">Got it</button></div></div></div>
 <div id="fr"><div class="fc"><small id="frw"></small><h2>Free Start</h2><p>Begin your next word on any letter, going up or down.</p><button id="frB">Pick a letter</button></div></div>
 <div id="dm"><div id="dc"><span id="dt"></span><button id="dx">Close</button></div></div>
