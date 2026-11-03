@@ -146,7 +146,7 @@ function subA(){var s=A(),P=AP[cur.A],w=s.path.map(function(q){return P.b[q[0]][
  s.path=s.up?[s.path[0]]:[];render()}
 function receiptA(){var s=A(),sol=PA[cur.A],t=scoreA(s),m=sol.common.filter(function(w){return !s.found.some(function(f){return f.w===w})}).sort(function(a,b){return b.length-a.length||(a<b?-1:1)});
  var h='<div class="rcpt"><h2>smAisle</h2><div class="sub">Ledder · No. '+(cur.A+1)+' · '+(s.found.length>=GOAL?'Goal met':'Closed early')+'</div>';
- s.found.forEach(function(f){h+='<div class="ln"><span>'+f.w+'</span><i></i><span>'+f.p+'</span></div>';if(f.deep)h+='<div class="ln bon"><span>'+(f.up?'Back to the Top':'Last Stop')+' bonus</span><i></i><span>+'+DEEPB+'</span></div>'});
+ s.found.forEach(function(f){h+='<div class="ln"><span>'+f.w+'</span><i></i><span>'+f.p+'</span></div>';if(f.deep)h+='<div class="ln bon"><span>'+'Full Line'+' bonus</span><i></i><span>+'+DEEPB+'</span></div>'});
  if(!s.found.length)h+='<div class="note">No words on this ticket.</div>';
  h+='<div class="ln tot"><span>Total</span><i></i><span>'+t+'</span></div><div class="note"><b>Top to bottom:</b> '+sol.deep.slice(0,3).join(', ')+'. <b>Also here:</b> '+m.filter(function(w){return sol.deep.indexOf(w)<0}).slice(0,4).join(', ')+'.</div><div class="rb"><button id="rP">Play again</button><button id="rN" class="go">Next puzzle</button></div></div>';
  $('rc').innerHTML=h;$('rP').onclick=function(){SA[cur.A]=newA();render()};$('rN').onclick=function(){cur.A=(cur.A+1)%5;render()}}
