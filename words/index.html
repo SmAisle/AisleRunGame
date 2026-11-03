@@ -70,7 +70,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver">Ledder test v0.15 · Nov 3 · mockup, not live</div>
+    <div id="ver">Ledder test v0.16 · Nov 3 · mockup, not live</div>
     <div id="rc"></div>
   </div>
 </div>
@@ -121,7 +121,7 @@ function setWord(s,txt){var w=$('word');w.className='';void w.offsetWidth;if(txt
 function renderA(){var s=A(),P=AP[cur.A],W=P.w,sol=PA[cur.A];
  $('nums').innerHTML='<div><small>Score</small><b id="sc">'+scoreA(s)+'</b></div><div><small>Found</small><b id="fc">'+s.found.length+'/'+GOAL+'</b></div>';
  $('fw').innerHTML=s.found.length?s.found.map(function(f){return f.deep?'<u>'+f.w+'</u>':f.w}).reverse().join(' · '):'<span class="none">'+sol.common.length+' everyday words on this board. Yours land here.</span>';
- var cw=s.path.map(function(q){return P.b[q[0]][q[1]]}).join(''),st=stuckA(s),lastW=s.found.length?s.found[s.found.length-1].w:'';if(st&&s.path.length<=1){say(s,'No words from here. Undo '+lastW+' or End.','bad');cw=''}setWord(s,cw);
+ var cw=s.path.map(function(q){return P.b[q[0]][q[1]]}).join(''),st=stuckA(s),lastW=s.found.length?s.found[s.found.length-1].w:'';if(s.menu){say(s,lastW?'Undo loses '+lastW+'. End finishes the game.':'End finishes the game.','bad');cw=''}else if(st&&s.path.length<=1){say(s,'No words from here. Tap Stuck.','bad');cw=''}setWord(s,cw);
  var el=$('bd'),r=el.getBoundingClientRect(),w=r.width,fh=Math.min(r.height,590)-4,n=W.length;if(!w||fh<=0)return;
  var off=(r.height-fh)/2,tw=Math.min(60,w/5.7),th=Math.max(26,Math.min(46,fh/n-15)),gy=(fh-th)/(n-1),gx=w/5.02,pos=function(l,i){return [w/2+(i-(W[l]-1)/2)*gx,off+th/2+l*gy]};
  var inP=function(l,i){return s.path.some(function(q){return q[0]===l&&q[1]===i})},last=s.path[s.path.length-1],next={};
@@ -129,11 +129,12 @@ function renderA(){var s=A(),P=AP[cur.A],W=P.w,sol=PA[cur.A];
  var o='<svg>',l,i;for(l=0;l<n-1;l++)for(i=0;i<W[l];i++)kids(W,l,i).forEach(function(j){var on=s.path.some(function(q,k){var t=s.path[k+1];if(!t)return false;var a=q[0]<t[0]?q:t,b=q[0]<t[0]?t:q;return a[0]===l&&a[1]===i&&b[1]===j});var one=s.both&&s.path.length===1,nearD=last&&(one||!s.up)&&last[0]===l&&last[1]===i&&next[(l+1)+','+j],nearU=last&&(one||s.up)&&last[0]===l+1&&last[1]===j&&next[l+','+i];if(on||nearD||nearU)o+=trk(pos(l,i),pos(l+1,j),on)});o+='</svg>';
  for(l=0;l<n;l++)for(i=0;i<W[l];i++){var q=pos(l,i),c='st'+(l===n-1?' end':'')+(l===0||l===n-1?' edge':'')+(inP(l,i)?' on':'')+(last&&last[0]===l&&last[1]===i?' now':'')+(next[l+','+i]?' nx':'')+(isLk(s,l,i)?' lk':'');o+='<button class="'+c+'" data-l="'+l+'" data-i="'+i+'" style="left:'+q[0]+'px;top:'+q[1]+'px;width:'+tw+'px;height:'+th+'px">'+P.b[l][i]+'</button>'}
  el.innerHTML=o;[].forEach.call(el.querySelectorAll('.st'),function(b){b.onclick=function(){tapA(+b.dataset.l,+b.dataset.i)}});
- $('btns').innerHTML='<button id="bC"'+(s.path.length>(s.anch?1:0)?'':' disabled')+'>Clear</button><button id="bS" class="go"'+(s.path.length>=3?'':' disabled')+'>'+(s.path.length&&s.path.length<3?'3+ letters':'Submit')+'</button><button id="bU"'+(st?' class="go"':'')+(s.hist.length&&!s.done?'':' disabled')+'>Undo</button><button id="bD">End</button>';
- $('bC').onclick=function(){s.path=s.anch?[s.path[0]]:[];say(s,s.anch?'Cleared. Keep going from your last letter.':'Cleared. Start in the top or bottom row.');render()};$('bS').onclick=subA;$('bU').onclick=undoA;$('bD').onclick=function(){s.done=true;render()};
+ if(s.menu&&!s.done){$('btns').innerHTML='<button id="bB">Back</button><button id="bU" class="go"'+(s.hist.length?'':' disabled')+'>Undo</button><button id="bD">End</button>';$('bB').onclick=function(){s.menu=false;say(s,'');render()};$('bU').onclick=undoA;$('bD').onclick=function(){s.menu=false;s.done=true;render()}}else{
+ $('btns').innerHTML='<button id="bC"'+(s.path.length>(s.anch?1:0)?'':' disabled')+'>Clear</button><button id="bS" class="go"'+(s.path.length>=3?'':' disabled')+'>'+(s.path.length&&s.path.length<3?'3+ letters':'Submit')+'</button><button id="bK"'+(st?' class="go"':'')+'>Stuck</button>';
+ $('bC').onclick=function(){s.path=s.anch?[s.path[0]]:[];say(s,s.anch?'Cleared. Keep going from your last letter.':'Cleared. Start in the top or bottom row.');render()};$('bS').onclick=subA;$('bK').onclick=function(){if(!s.done){s.menu=true;render()}}}
  $('rc').className=s.done?'show':'';if(s.done)receiptA();
 }
-function tapA(l,i){var s=A(),W=AP[cur.A].w,n=W.length;if(s.done)return;var p=s.path,last=p[p.length-1],k=-1;p.forEach(function(q,x){if(q[0]===l&&q[1]===i)k=x});
+function tapA(l,i){var s=A(),W=AP[cur.A].w,n=W.length;if(s.done||s.menu)return;var p=s.path,last=p[p.length-1],k=-1;p.forEach(function(q,x){if(q[0]===l&&q[1]===i)k=x});
  if(isLk(s,l,i)){say(s,'Keep going from your last letter. This row is locked.','bad',1);render();return}
  if(!p.length){if(l===0||l===n-1){s.up=l===n-1;p.push([l,i])}else say(s,'Words start in the top or bottom row.','bad',1);render();return}
  if(k===0&&s.anch){p.length=1;render();return}
@@ -147,7 +148,7 @@ function tapA(l,i){var s=A(),W=AP[cur.A].w,n=W.length;if(s.done)return;var p=s.p
 var PRE=null;function prefixes(){if(PRE)return PRE;PRE=new Set();ALL.forEach(function(w){for(var i=1;i<w.length;i++)PRE.add(w.slice(0,i))});return PRE}
 function reach(s,P,l,i,dir,t){var n=P.w.length;if(t.length>=3&&ALL.has(t)&&!s.found.some(function(f){return f.w===t})&&s.dead.indexOf(t)<0)return true;if(!prefixes().has(t))return false;var nx=dir>0?kids(P.w,l,i):(l<1?[]:ups(P.w,l,i));for(var k=0;k<nx.length;k++)if(reach(s,P,l+dir,nx[k],dir,t+P.b[l+dir][nx[k]]))return true;return false}
 function stuckA(s){if(s.done||!s.anch||!s.path.length)return false;var P=AP[cur.A],a=s.path[0],c=P.b[a[0]][a[1]];if(s.both)return !reach(s,P,a[0],a[1],1,c)&&!reach(s,P,a[0],a[1],-1,c);return !reach(s,P,a[0],a[1],s.up?-1:1,c)}
-function undoA(){var s=A(),h=s.hist.pop();if(!h||s.done)return;var f=s.found.pop();s.dead.push(f.w);s.anch=h.anch;s.up=h.up;s.both=h.both;s.lock=h.lock;s.path=h.path;say(s,f.w+' is gone and can\'t be played again.','bad');render()}
+function undoA(){var s=A(),h=s.hist.pop();if(!h||s.done)return;var f=s.found.pop();s.menu=false;s.dead.push(f.w);s.anch=h.anch;s.up=h.up;s.both=h.both;s.lock=h.lock;s.path=h.path;say(s,f.w+' is gone and can\'t be played again.','bad');render()}
 function subA(){var s=A(),P=AP[cur.A],w=s.path.map(function(q){return P.b[q[0]][q[1]]}).join(''),deep=s.path[s.path.length-1][0]===P.w.length-1;
  if(!ALL.has(w))say(s,w+' is not in the word list.','bad',1);
  else if(s.found.some(function(f){return f.w===w}))say(s,w+' is already on your ticket.','bad',1);
