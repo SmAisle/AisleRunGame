@@ -75,7 +75,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 .cf{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);text-align:center;font:700 12px var(--sans);color:var(--ink2)}.cf a{color:var(--ink);font-weight:800}
 .nums b.sr{font:800 15px/1.4 var(--sans);color:#a67c1a;letter-spacing:.02em}
 #ts{font-size:12px;letter-spacing:.03em;text-transform:none;color:#7a5a12}
-.szc{display:flex;gap:6px;margin-bottom:6px}.cm .szc button{flex:1;height:40px;margin:0;font-size:13.5px}.cm .szc button.on{background:var(--hi)}
+.szc{display:flex;gap:6px;margin-bottom:6px}.cm .szc button{flex:1;height:40px;margin:0;font-size:12.5px;padding:0;min-width:0}.cm .szc button.on{background:var(--hi)}
 </style>
 </head>
 <body>
@@ -86,14 +86,14 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver"><button id="hpb">How to Play</button><button id="szb">Size</button> · Ledder test v0.24 · Nov 3 · not live</div>
+    <div id="ver"><button id="hpb">How to Play</button><button id="szb">Size</button> · Ledder test v0.25 · Nov 3 · not live</div>
     <div id="rc"></div>
   </div>
 </div>
 <div id="cv"><div class="cm"><h1>Ledder</h1><p>A word path through <span id="cvt">seven</span> rows</p>
 <div class="cm-t"><span>M</span><span>A</span><span>T</span></div>
-<div class="szc"><button class="on">5 × 7</button><button>7 × 6</button><button>7 × 7</button></div><button id="cvP">Play</button><button id="cvH">How to Play</button></div>
-<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.24 · Nov 3 · test</div></div>
+<div class="szc"><button class="on">5 × 7</button><button>6 × 7</button><button>7 × 6</button><button>7 × 7</button></div><button id="cvP">Play</button><button id="cvH">How to Play</button></div>
+<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.25 · Nov 3 · test</div></div>
 <div id="hp"><div class="hc"><h2>How to Play Ledder</h2>
 <ul><li><b>Find words</b> on the path through the rows. 10 words is one star, 20 is two, 30 is three.</li>
 <li><b>Start</b> on a gold letter in the top or bottom row.</li>
@@ -155,7 +155,7 @@ function renderA(){var s=A(),P=AP[cur.A],W=P.w,sol=PA[cur.A];
  $('fw').innerHTML=s.found.length?s.found.map(function(f){return f.deep?'<u>'+f.w+'</u>':f.w}).reverse().join(' · '):'<span class="none">'+sol.common.length+' everyday words on this board. Yours land here.</span>';
  var cw=s.path.map(function(q){return P.b[q[0]][q[1]]}).join(''),st=stuckA(s),lastW=s.found.length?s.found[s.found.length-1].w:'';if(s.menu){say(s,lastW?'Undo loses '+lastW+'. End finishes the game.':'End finishes the game.','bad');cw=''}else if(st&&s.path.length<=1){say(s,'No words from here. Tap Stuck.','bad');cw=''}else if(s.flash&&s.path.length<=1){s.flash=0;cw=''}else if(s.warn&&s.warn===cw){cw=''}else if(s.warn){s.warn=''}setWord(s,cw);
  var el=$('bd'),r=el.getBoundingClientRect(),w=r.width,fh=Math.min(r.height,590)-4,n=W.length;if(!w||fh<=0)return;
- var C=W[0],off=(r.height-fh)/2,tw=Math.min(60,w/(C+.7)),th=Math.max(26,Math.min(C>5?56:46,fh/n-(C>5?10:15))),gy=(fh-th)/(n-1),gx=w/(C+.02),fsz=C>5?'font-size:19px;':'',pos=function(l,i){return [w/2+(i-(W[l]-1)/2)*gx,off+th/2+l*gy]};
+ var C=W[0],off=(r.height-fh)/2,tw=Math.min(60,w/(C+.7)),th=Math.max(26,Math.min(C>5?56:46,fh/n-(C>5?10:15))),gy=(fh-th)/(n-1),gx=w/(C+.02),fsz=C>6?'font-size:19px;':C>5?'font-size:20px;':'',pos=function(l,i){return [w/2+(i-(W[l]-1)/2)*gx,off+th/2+l*gy]};
  var inP=function(l,i){return s.path.some(function(q){return q[0]===l&&q[1]===i})},last=s.path[s.path.length-1],next={};
  if(!s.done){if(s.both&&s.path.length===1){ups(W,last[0],last[1]).forEach(function(j){next[(last[0]-1)+','+j]=1});kids(W,last[0],last[1]).forEach(function(j){next[(last[0]+1)+','+j]=1})}else if(s.up&&last)ups(W,last[0],last[1]).forEach(function(j){if(!isLk(s,last[0]-1,j))next[(last[0]-1)+','+j]=1});else if(last)kids(W,last[0],last[1]).forEach(function(j){next[(last[0]+1)+','+j]=1});else for(var a=0;a<W[0];a++){next['0,'+a]=1;next[(n-1)+','+a]=1}}
  var o='<svg>',l,i;for(l=0;l<n-1;l++)for(i=0;i<W[l];i++)kids(W,l,i).forEach(function(j){var on=s.path.some(function(q,k){var t=s.path[k+1];if(!t)return false;var a=q[0]<t[0]?q:t,b=q[0]<t[0]?t:q;return a[0]===l&&a[1]===i&&b[1]===j});var one=s.both&&s.path.length===1,nearD=last&&(one||!s.up)&&last[0]===l&&last[1]===i&&next[(l+1)+','+j],nearU=last&&(one||s.up)&&last[0]===l+1&&last[1]===j&&next[l+','+i];if(on||nearD||nearU)o+=trk(pos(l,i),pos(l+1,j),on)});o+='</svg>';
@@ -244,8 +244,8 @@ function demo(){$('hp').className='';var k0=KZ;useSize(0);dSave={s:SA[0],c:cur.A
   var q=st[1],k=0;(function nx(){if(tok!==dTok)return;if(k<q.length){tapA(q[k][0],q[k][1]);k++;dTm=setTimeout(nx,520);return}dTm=setTimeout(function(){if(tok!==dTok)return;subA();dTm=setTimeout(run,1500)},650)})()}
  run()}
 $('hpb').onclick=function(){$('hp').className='show'};$('hpC').onclick=function(){$('hp').className=''};$('hpD').onclick=demo;$('dx').onclick=demoEnd;
-var EXTRA_SETS=[[{"w":[7,7,7,7,7,7],"b":["ATSBLRP","SRESEAS","DEELTES","RNTDLST","OAIAIOU","WBFMHRP"]},{"w":[7,7,7,7,7,7],"b":["MWFHLRT","IOAIAES","LNRSDTA","DETDNRS","EOSEAEO","TDRBDPH"]},{"w":[7,7,7,7,7,7],"b":["HFBTRSB","AIOEASE","TRNLTED","MEDTSRD","DESIAOA","DRSBPMC"]}],[{"w":[7,7,7,7,7,7,7],"b":["BSTMCWR","IEAOIEI","TRSLNSD","ESKTESE","DNRSTRN","OIAOUAI","DBLPCLF"]},{"w":[7,7,7,7,7,7,7],"b":["FWPHBCR","IAOEOAE","NRSARNS","SETDSES","DSINTPS","EOEAAOI","NRLTPRN"]},{"w":[7,7,7,7,7,7,7],"b":["THCBPMR","IAOUAOI","ESPRTDS","STESNTE","PNSTEMR","IAEROAI","LPYSNDF"]}]];
-SETS=[{AP:AP,PA:PA,SA:SA},null,null];
+var EXTRA_SETS=[[{"w":[6,6,6,6,6,6,6],"b":["NDRPRT","SEERAC","PTRSEM","AIATPD","TRSEOA","TEERNR","YSPDTE"]},{"w":[6,6,6,6,6,6,6],"b":["BPNLAT","AEORLS","RSTIEL","EATSTA","MAESNT","ORREAE","TCSMDP"]},{"w":[6,6,6,6,6,6,6],"b":["WMPLTU","IAAASS","DNRETT","EOTESR","RRNAAA","AAOERP","LTCRES"]},{"w":[6,6,6,6,6,6,6],"b":["LPMRTA","AIAERR","SRNESE","TEDTRP","SNLAOA","IOELRR","MRGCET"]},{"w":[6,6,6,6,6,6,6],"b":["PBESEA","EAETRS","RTSAET","EATSRP","PSTIOA","AEONPL","PNRPGS"]}],[{"w":[7,7,7,7,7,7],"b":["ATSBLRP","SRESEAS","DEELTES","RNTDLST","OAIAIOU","WBFMHRP"]},{"w":[7,7,7,7,7,7],"b":["MWFHLRT","IOAIAES","LNRSDTA","DETDNRS","EOSEAEO","TDRBDPH"]},{"w":[7,7,7,7,7,7],"b":["HFBTRSB","AIOEASE","TRNLTED","MEDTSRD","DESIAOA","DRSBPMC"]}],[{"w":[7,7,7,7,7,7,7],"b":["BSTMCWR","IEAOIEI","TRSLNSD","ESKTESE","DNRSTRN","OIAOUAI","DBLPCLF"]},{"w":[7,7,7,7,7,7,7],"b":["FWPHBCR","IAOEOAE","NRSARNS","SETDSES","DSINTPS","EOEAAOI","NRLTPRN"]},{"w":[7,7,7,7,7,7,7],"b":["THCBPMR","IAOUAOI","ESPRTDS","STESNTE","PNSTEMR","IAEROAI","LPYSNDF"]}]];
+SETS=[{AP:AP,PA:PA,SA:SA},null,null,null];
 function dayN(){var d=new Date();return Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5)}
 function useSize(k){if(!SETS[k]){var a=EXTRA_SETS[k-1];AP=a;var p=a.map(solveA),q=[];a.forEach(function(){q.push(newA())});SETS[k]={AP:a,PA:p,SA:q}}KZ=k;AP=SETS[k].AP;PA=SETS[k].PA;SA=SETS[k].SA;cur.A=dayN()%AP.length;
  var rw=AP[0].w.length;$('hr1').textContent=rw===6?'Rows 3 and 4:':'Rows 3 to 5:';$('hr2').textContent=rw===6?'Rows 2 and 5:':'Rows 2 and 6:';$('hr3').textContent=rw;$('cvt').textContent=rw===6?'six':'seven';
