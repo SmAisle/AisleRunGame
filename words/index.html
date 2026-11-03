@@ -86,21 +86,21 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver"><button id="hpb">How to Play</button><button id="szb">Size</button> · Ledder test v0.25 · Nov 3 · not live</div>
+    <div id="ver"><button id="hpb">How to Play</button><button id="szb">Size</button> · Ledder test v0.26 · Nov 3 · not live</div>
     <div id="rc"></div>
   </div>
 </div>
 <div id="cv"><div class="cm"><h1>Ledder</h1><p>A word path through <span id="cvt">seven</span> rows</p>
 <div class="cm-t"><span>M</span><span>A</span><span>T</span></div>
 <div class="szc"><button class="on">5 × 7</button><button>6 × 7</button><button>7 × 6</button><button>7 × 7</button></div><button id="cvP">Play</button><button id="cvH">How to Play</button></div>
-<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.25 · Nov 3 · test</div></div>
+<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.26 · Nov 3 · test</div></div>
 <div id="hp"><div class="hc"><h2>How to Play Ledder</h2>
 <ul><li><b>Find words</b> on the path through the rows. 10 words is one star, 20 is two, 30 is three.</li>
-<li><b>Start</b> on a gold letter in the top or bottom row.</li>
+<li><b>Start</b> your first word on a letter in the top row. The board lights up once you pick one.</li>
 <li><b>Each letter</b> touches the last one, straight or one tile over, moving one row at a time.</li>
 <li><b>Your next word</b> starts on your last letter. The rest of that row locks.</li>
 <li><b id="hr1">Rows 3 to 5:</b> go up or down. <b id="hr2">Rows 2 and 6:</b> turn back the way you came.</li>
-<li><b>Reach the top or bottom row</b> for a free start from any gold letter.</li>
+<li><b>Reach the top or bottom row</b> for a free start: begin your next word on any letter, going up or down.</li>
 <li><b>Points:</b> 3 letters 3, 4 letters 5, 5 letters 8, 6 letters 12, 7 letters 17. Using all <span id="hr3">7</span> rows is a <b>Full Line</b>, +20. Easy endings like -S, -ED and -ING score less.</li>
 <li><b>Stuck?</b> Tap Stuck to Undo your last word, which is gone for good, or End the game.</li></ul>
 <div class="rb"><button id="hpD">Demo</button><button id="hpC" class="go">Got it</button></div></div></div>
@@ -128,7 +128,7 @@ function solveB(letters){var s0=letters.split('').sort().join(''),c0=cnt(s0),can
 var PA=AP.map(solveA),PB=BP.map(solveB);var SETS=null,KZ=0;
 var BCAND=BP.map(function(l){var c=cnt(l),o=[];ALL.forEach(function(w){if(w.length<=12&&fits(w,c))o.push(w)});return o});
 var mode='A',cur={A:0,B:0},SA=[],SB=[];
-function newA(){return {warn:"",hist:[],dead:[],path:[],found:[],done:false,up:false,anch:false,both:false,lock:[],msg:'Words need 3 or more letters. Start in the top or bottom row.',cls:'m'}}
+function newA(){return {warn:"",hist:[],dead:[],path:[],found:[],done:false,up:false,anch:false,both:false,lock:[],msg:'Pick a letter in the top row to start.',cls:'m'}}
 function ups(W,l,i){var o=[];if(l<1)return o;for(var j=0;j<W[l-1];j++)if(kids(W,l-1,j).indexOf(i)>=0)o.push(j);return o}
 function isLk(s,l,i){return s.lock.some(function(q){return q[0]===l&&q[1]===i})}
 function newB(i){return {t:BP[i].split(''),gone:Array(12).fill(false),pick:[],words:[],undo:1,last:null,done:false,msg:'Tap letters in any order. Used letters leave the shelf for good.',cls:'m'}}
@@ -157,24 +157,25 @@ function renderA(){var s=A(),P=AP[cur.A],W=P.w,sol=PA[cur.A];
  var el=$('bd'),r=el.getBoundingClientRect(),w=r.width,fh=Math.min(r.height,590)-4,n=W.length;if(!w||fh<=0)return;
  var C=W[0],off=(r.height-fh)/2,tw=Math.min(60,w/(C+.7)),th=Math.max(26,Math.min(C>5?56:46,fh/n-(C>5?10:15))),gy=(fh-th)/(n-1),gx=w/(C+.02),fsz=C>6?'font-size:19px;':C>5?'font-size:20px;':'',pos=function(l,i){return [w/2+(i-(W[l]-1)/2)*gx,off+th/2+l*gy]};
  var inP=function(l,i){return s.path.some(function(q){return q[0]===l&&q[1]===i})},last=s.path[s.path.length-1],next={};
- if(!s.done){if(s.both&&s.path.length===1){ups(W,last[0],last[1]).forEach(function(j){next[(last[0]-1)+','+j]=1});kids(W,last[0],last[1]).forEach(function(j){next[(last[0]+1)+','+j]=1})}else if(s.up&&last)ups(W,last[0],last[1]).forEach(function(j){if(!isLk(s,last[0]-1,j))next[(last[0]-1)+','+j]=1});else if(last)kids(W,last[0],last[1]).forEach(function(j){next[(last[0]+1)+','+j]=1});else for(var a=0;a<W[0];a++){next['0,'+a]=1;next[(n-1)+','+a]=1}}
+ if(!s.done){if(s.both&&s.path.length===1){ups(W,last[0],last[1]).forEach(function(j){next[(last[0]-1)+','+j]=1});kids(W,last[0],last[1]).forEach(function(j){next[(last[0]+1)+','+j]=1})}else if(s.up&&last)ups(W,last[0],last[1]).forEach(function(j){if(!isLk(s,last[0]-1,j))next[(last[0]-1)+','+j]=1});else if(last)kids(W,last[0],last[1]).forEach(function(j){next[(last[0]+1)+','+j]=1});else if(!s.found.length)for(var a=0;a<W[0];a++)next['0,'+a]=1}
  var o='<svg>',l,i;for(l=0;l<n-1;l++)for(i=0;i<W[l];i++)kids(W,l,i).forEach(function(j){var on=s.path.some(function(q,k){var t=s.path[k+1];if(!t)return false;var a=q[0]<t[0]?q:t,b=q[0]<t[0]?t:q;return a[0]===l&&a[1]===i&&b[1]===j});var one=s.both&&s.path.length===1,nearD=last&&(one||!s.up)&&last[0]===l&&last[1]===i&&next[(l+1)+','+j],nearU=last&&(one||s.up)&&last[0]===l+1&&last[1]===j&&next[l+','+i];if(on||nearD||nearU)o+=trk(pos(l,i),pos(l+1,j),on)});o+='</svg>';
- for(l=0;l<n;l++)for(i=0;i<W[l];i++){var q=pos(l,i),c='st'+(l===n-1?' end':'')+(l===0||l===n-1?' edge':'')+(inP(l,i)?' on':'')+(last&&last[0]===l&&last[1]===i?' now':'')+(next[l+','+i]?' nx':'')+(isLk(s,l,i)?' lk':'');o+='<button class="'+c+'" data-l="'+l+'" data-i="'+i+'" style="left:'+q[0]+'px;top:'+q[1]+'px;width:'+tw+'px;height:'+th+'px;'+fsz+'">'+P.b[l][i]+'</button>'}
+ for(l=0;l<n;l++)for(i=0;i<W[l];i++){var q=pos(l,i),c='st'+(l===n-1?' end':'')+(l===0||l===n-1?' edge':'')+(inP(l,i)?' on':'')+(last&&last[0]===l&&last[1]===i?' now':'')+(next[l+','+i]?' nx':'')+(isLk(s,l,i)||(!s.found.length&&!s.path.length&&l>0)?' lk':'');o+='<button class="'+c+'" data-l="'+l+'" data-i="'+i+'" style="left:'+q[0]+'px;top:'+q[1]+'px;width:'+tw+'px;height:'+th+'px;'+fsz+'">'+P.b[l][i]+'</button>'}
  el.innerHTML=o;[].forEach.call(el.querySelectorAll('.st'),function(b){b.onclick=function(){tapA(+b.dataset.l,+b.dataset.i)}});
  if(s.menu&&!s.done){$('btns').innerHTML='<button id="bB">Back</button><button id="bU" class="go"'+(s.hist.length?'':' disabled')+'>Undo</button><button id="bD">End</button>';$('bB').onclick=function(){s.menu=false;say(s,'');render()};$('bU').onclick=undoA;$('bD').onclick=function(){s.menu=false;s.done=true;render()}}else{
  $('btns').innerHTML='<button id="bC"'+(s.path.length>(s.anch?1:0)?'':' disabled')+'>Clear</button><button id="bS" class="go"'+(s.path.length>=3?'':' disabled')+'>'+(s.path.length&&s.path.length<3?'3+ letters':(s.warn?'Play anyway':'Submit'))+'</button><button id="bK"'+(st?' class="go"':'')+'>Stuck</button>';
- $('bC').onclick=function(){s.warn='';s.path=s.anch?[s.path[0]]:[];say(s,s.anch?'Cleared. Keep going from your last letter.':'Cleared. Start in the top or bottom row.');render()};$('bS').onclick=subA;$('bK').onclick=function(){if(!s.done){s.menu=true;render()}}}
+ $('bC').onclick=function(){s.warn='';s.path=s.anch?[s.path[0]]:[];say(s,s.anch?'Cleared. Keep going from your last letter.':(s.found.length?'Free start. Begin on any letter.':'Pick a letter in the top row to start.'));render()};$('bS').onclick=subA;$('bK').onclick=function(){if(!s.done){s.menu=true;render()}}}
  $('rc').className=s.done?'show':'';if(s.done)receiptA();
 }
 function tapA(l,i){var s=A(),W=AP[cur.A].w,n=W.length;if(s.done||s.menu)return;var p=s.path,last=p[p.length-1],k=-1;p.forEach(function(q,x){if(q[0]===l&&q[1]===i)k=x});
  if(isLk(s,l,i)){say(s,'Keep going from your last letter. This row is locked.','bad',1);render();return}
- if(!p.length){if(l===0||l===n-1){s.up=l===n-1;p.push([l,i])}else say(s,'Words start in the top or bottom row.','bad',1);render();return}
+ var first=!s.found.length,begin=function(){s.path=[[l,i]];s.up=l===n-1;s.both=!first&&l>0&&l<n-1};
+ if(!p.length){if(first&&l!==0)say(s,'Pick a letter in the top row to start.','bad',1);else begin();render();return}
  if(k===0&&s.anch){p.length=1;render();return}
  if(k>=0){p.length=k===p.length-1?k:k+1;render();return}
  if(s.both&&p.length===1&&Math.abs(l-last[0])===1)s.up=l<last[0];
  var nx=s.up?ups(W,last[0],last[1]):kids(W,last[0],last[1]);
  if(l===last[0]+(s.up?-1:1)&&nx.indexOf(i)>=0)p.push([l,i]);
- else if(!s.anch&&(l===0||l===n-1)){s.path=[[l,i]];s.up=l===n-1}
+ else if(!s.anch&&(p.length===1||l===0||l===n-1)&&(!first||l===0)){begin()}
  else{var w=$('word');w.classList.remove('sh');void w.offsetWidth;w.classList.add('sh');return}
  render()}
 var PRE=null;function prefixes(){if(PRE)return PRE;PRE=new Set();ALL.forEach(function(w){for(var i=1;i<w.length;i++)PRE.add(w.slice(0,i))});return PRE}
@@ -188,7 +189,7 @@ function subA(){var s=A(),P=AP[cur.A],w=s.path.map(function(q){return P.b[q[0]][
  else if(s.dead.indexOf(w)>=0)say(s,w+' was undone. Try another word.','bad',1);
  else if(s.warn!==w&&endsDead(s,P,w)){s.warn=w;say(s,w+' is a dead end. Pick another word or play it anyway.','bad',1);render();return}
  else{s.warn='';s.hist.push({anch:s.anch,up:s.up,both:s.both,lock:s.lock.slice(),path:s.anch?[s.path[0]]:[]});var wasUp=s.up,top=s.path[s.path.length-1][0]===0,inf=infl(w),bon=w.length===P.w.length&&!inf,p=pts(inf?Math.max(3,w.length-1):w.length);s.found.push({w:w,p:p,deep:bon,up:wasUp});say(s,'+'+(p+(bon?DEEPB:0))+' '+w+(bon?' · Full Line!':(inf&&w.length>3?' · easy ending, fewer points':'')),'good');var nf=s.found.length;if(STARS.indexOf(nf)>=0){s.msg='★ '+nf+' words! '+starS(nf);s.flash=1}
-  var e=s.path[s.path.length-1],n=P.w.length;s.both=false;if(e[0]===0||e[0]===n-1){s.anch=false;s.up=false;s.lock=[];s.path=[];s.msg+=' · Free start'}else{s.lock=[];for(var q0=0;q0<P.w[e[0]];q0++)if(q0!==e[1])s.lock.push([e[0],q0]);s.anch=true;s.up=!wasUp;s.path=[e];s.both=e[0]>=2&&e[0]<=n-3;s.msg+=s.both?' · Go up or down':s.up?' · Now go up':' · Now go down'}render();return}
+  var e=s.path[s.path.length-1],n=P.w.length;s.both=false;if(e[0]===0||e[0]===n-1){s.anch=false;s.up=false;s.lock=[];s.path=[];s.msg+=' · Free start: begin on any letter'}else{s.lock=[];for(var q0=0;q0<P.w[e[0]];q0++)if(q0!==e[1])s.lock.push([e[0],q0]);s.anch=true;s.up=!wasUp;s.path=[e];s.both=e[0]>=2&&e[0]<=n-3;s.msg+=s.both?' · Go up or down':s.up?' · Now go up':' · Now go down'}render();return}
  s.path=s.anch?[s.path[0]]:[];render()}
 function receiptA(){var s=A(),sol=PA[cur.A],t=scoreA(s),m=sol.common.filter(function(w){return !s.found.some(function(f){return f.w===w})}).sort(function(a,b){return b.length-a.length||(a<b?-1:1)});
  var h='<div class="rcpt"><h2>smAisle</h2><div class="sub">Ledder · '+starS(s.found.length)+' · '+s.found.length+' words'+'</div>';
@@ -224,13 +225,13 @@ function dTap(q){var s=SA[0];tapA(q[0],q[1])}
 function demoEnd(){dTok++;clearTimeout(dTm);if(!dSave)return;SA[0]=dSave.s;cur.A=dSave.c;mode=dSave.m;$('cv').className=dSave.cv;var kk=dSave.k;dSave=null;useSize(kk);$('dm').className='';render()}
 function demo(){$('hp').className='';var k0=KZ;useSize(0);dSave={s:SA[0],c:cur.A,m:mode,cv:$('cv').className,k:k0};$('cv').className='off';SA[0]=newA();cur.A=0;mode='A';$('dm').className='show';render();var tok=++dTok;
  var E=[3,0],steps=[
- ['t','Start on a gold letter in the top or bottom row.',2600],
+ ['t','Your first word starts in the top row. The board lights up once you pick a letter.',2600],
  ['t','Spell a word one row at a time. Each letter touches the last, straight or one tile over.',800],
  ['w',[[0,0],[1,1],[2,1],[3,0]]],
  ['t','Your next word starts on your last letter. The rest of that row locks.',3400],
  ['t','In rows 3 to 5 you can go up or down. In rows 2 and 6 you turn back.',800],
  ['w',[[4,0],[5,1],[6,2]]],
- ['t','You reached the bottom row, so you get a free start. Easy endings like -S score less.',3800],
+ ['t','You reached the bottom row, so your next word can start on any letter. Easy endings like -S score less.',3800],
  ['t','A word through all 7 rows is a Full Line, worth 20 extra points.',800],
  ['w',[[0,1],[1,2],[2,3],[3,3],[4,2],[5,2],[6,1]]],
  ['t','If a word would leave you nowhere to go, the game warns you first.',3200],
