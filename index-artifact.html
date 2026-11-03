@@ -144,7 +144,7 @@ html[data-mode=navy] .go{border-color:var(--btn)}
 (function(){
 /* Settings. PLUS_GAME false = standard game with no preview. STORES_LIVE = the stores that run in the daily rotation; the others open only with ?store=. */
 var PLUS_GAME=true,PV_ROWS=3,STORES_LIVE=['grocery'],MAXC=3,STUDY_MS=15000,SHARE_URL='https://smaisle.app/AisleRunGame/';
-var VERSION='1.0',VDATE='Nov 3',NAME='smAisle Run',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
+var VERSION='1.1',VDATE='Nov 3',NAME='smAisle Run',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 var VTXT='v'+VERSION+' · '+VDATE,$=function(i){return document.getElementById(i)};
 var WEB=/github\.io$|smaisle\.app$/.test(location.hostname);
 var store={get:function(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},json:function(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v===null?d:v}catch(e){return d}},put:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -357,15 +357,15 @@ function make(n,dow){var r=rng(Math.imul(n,2654435761)^CUR.seed),H=hardness(dow)
  return {n:n,list:list,need:need,swap:swap,mode:mode,sol:sol,t:tiles}}
 
 /* Cover picture and icon: the cart in black, gold and cream. Used by the game's cover and by icon.js. */
-function cartMark(g,cx,cy,s){var GD='#c9a961',CR='#f4efe1';g.save();g.translate(cx,cy);g.scale(s,s);g.lineCap='round';g.lineJoin='round';
- g.strokeStyle=CR;g.lineWidth=7;g.beginPath();g.moveTo(-96,-74);g.lineTo(-72,-74);g.lineTo(-50,14);g.lineTo(62,14);g.stroke();
- g.beginPath();g.moveTo(-66,-52);g.lineTo(84,-52);g.lineTo(66,-4);g.lineTo(-54,-4);g.closePath();g.strokeStyle=GD;g.lineWidth=7;g.stroke();
- g.lineWidth=3;for(var i=1;i<5;i++){g.beginPath();g.moveTo(-66+i*30,-52);g.lineTo(-54+i*24,-4);g.stroke()}g.beginPath();g.moveTo(-60,-28);g.lineTo(75,-28);g.stroke();
- [-38,50].forEach(function(a){g.beginPath();g.arc(a,34,11,0,7);g.strokeStyle=CR;g.lineWidth=6;g.stroke()});g.restore()}
-function coverArt(g,w,h){var GD='#c9a961',CR='#f4efe1',f=h*.5/100;g.fillStyle='#17150f';g.fillRect(0,0,w,h);var m=Math.round(Math.min(w,h)*.035)+.5;g.strokeStyle=GD;g.lineWidth=Math.max(1,h/150);g.strokeRect(m,m,w-2*m,h-2*m);
- var y=h*.84;g.strokeStyle=GD;g.lineWidth=Math.max(1,h/110);g.beginPath();g.moveTo(m*3,y);g.lineTo(w-m*3,y);g.stroke();
- /* the list: eight stops down the aisle, the first few taken */
- var n=8,x0=w*.56,dx=(w-m*5-x0)/(n-1);for(var i=0;i<n;i++){g.beginPath();g.arc(x0+i*dx,y-h*.085,h*.024,0,7);if(i<3){g.fillStyle=GD;g.fill()}else{g.strokeStyle=CR;g.lineWidth=Math.max(1,h/180);g.stroke()}}
+function cartMark(g,cx,cy,s){var INK='#1a1814',HI='#ffe27a';g.save();g.translate(cx,cy);g.scale(s,s);g.lineCap='round';g.lineJoin='round';
+ g.beginPath();g.moveTo(-66,-52);g.lineTo(84,-52);g.lineTo(66,-4);g.lineTo(-54,-4);g.closePath();g.fillStyle=HI;g.fill();g.strokeStyle=INK;g.lineWidth=7;g.stroke();
+ g.lineWidth=3.5;for(var i=1;i<5;i++){g.beginPath();g.moveTo(-66+i*30,-52);g.lineTo(-54+i*24,-4);g.stroke()}g.beginPath();g.moveTo(-60,-28);g.lineTo(75,-28);g.stroke();
+ g.lineWidth=7;g.beginPath();g.moveTo(-96,-74);g.lineTo(-72,-74);g.lineTo(-50,14);g.lineTo(62,14);g.stroke();
+ [-38,50].forEach(function(a){g.beginPath();g.arc(a,34,11,0,7);g.fillStyle='#fffdf6';g.fill();g.strokeStyle=INK;g.lineWidth=6;g.stroke()});g.restore()}
+function coverArt(g,w,h){var INK='#1a1814',f=h*.5/100;g.fillStyle='#f4efe1';g.fillRect(0,0,w,h);g.strokeStyle=INK;g.lineWidth=Math.max(1.5,h/90);g.strokeRect(1,1,w-2,h-2);
+ var y=h*.84;g.fillStyle='rgba(26,24,20,.12)';for(var i=8;i<h;i+=7)g.fillRect(0,i,w,.6);g.strokeStyle=INK;g.lineWidth=Math.max(1.5,h/110);g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();
+ /* hanging aisle signs */
+ [.62,.88].forEach(function(p,k){var x=w*p,sw=h*.3,sh=h*.2;g.fillStyle=INK;g.fillRect(x-sw*.32,0,1.5,h*.09);g.fillRect(x+sw*.32,0,1.5,h*.09);g.fillStyle='#fffdf6';g.fillRect(x-sw/2,h*.09,sw,sh);g.strokeStyle=INK;g.lineWidth=Math.max(1.5,h/110);g.strokeRect(x-sw/2,h*.09,sw,sh);g.fillStyle=INK;g.font='900 '+Math.round(sh*.62)+'px Playfair Display,Georgia,serif';g.textAlign='center';g.fillText(k+1,x,h*.09+sh*.74);g.textAlign='left'});
  cartMark(g,w*.31,y-(45*f*1.05),f*1.05)}
 
 /* ?store=hardware or ?store=pet: Jeff's test view of a store that isn't live. Nothing is saved, recorded or sent. */
