@@ -28,7 +28,7 @@ function tapTile(l,i){if(DEMO)return;var lb=$('go').textContent;if(l===9&&!busy&
  if(PV||FREE)return;
  if(T.mode==='pc'&&(l===3||l===6)&&reach()===l+1&&!RUN.pc[l]){RUN.pc[l]=1;priceCheck(l)}
  if(T.mode==='mom'&&l===3&&!RUN.pc.m){RUN.pc.m=1;save();showMom();}}
-function showMom(){$('momw').textContent=CUR.texter;$('momt').textContent='Forgot! Swap the '+nmz(T.swap.from)+' for '+nmz(T.swap.to)+'.';$('mom').hidden=false;play('text')}
+function showMom(){$('momw').textContent=CUR.texter;$('moma').textContent=CUR.texter.charAt(0);$('momt').textContent='Swap the '+nmz(T.swap.from)+' for '+nmz(T.swap.to)+'.';$('mom').hidden=false;play('text')}
 var clkT=null;function clk(id,ms,done,total){var bar=$(id),t0=performance.now(),tt=total||ms;clearInterval(clkT);clkT=setInterval(function(){var f=(ms-(performance.now()-t0))/tt;bar.style.transform='scaleX('+Math.max(0,f)+')';if(f<=0){clearInterval(clkT);done()}},60)}
 /* Same three items and prices for everyone. A slow or wrong answer takes the labels off the next row; it stays off through a reload. */
 function pcItems(row){var r=rng(Math.imul(T.n,2654435761)^CUR.seed^(row*40503)),pool=[],l,i;for(l=row+1;l<=8;l++)for(i=0;i<BW[l];i++){var n=T.t[l+','+i];if(n!==T.list[l-1]&&pool.indexOf(n)<0)pool.push(n)}pool=shuf(pool,r).slice(0,3);var c=CUR.all.slice();while(pool.length<3){var a=c[Math.floor(r()*c.length)];if(pool.indexOf(a)<0)pool.push(a)}var seen={},pr=[];while(pr.length<3){var p=(Math.floor(r()*8)+1)+(Math.floor(r()*9)+1)/10;if(!seen[p]){seen[p]=1;pr.push(p)}}return {pool:pool,pr:pr,lo:Math.min.apply(null,pr)}}
@@ -84,7 +84,7 @@ var DS=[{r:function(){fillStudy();$('clkb').style.transform='';$('study').hidden
  {r:function(){$('study').hidden=true;size();setPick(1,T.sol[1]);setPick(2,T.sol[2]);play('tap');buildBoard();say('Row 3 is open.','Pick the next item on your list.')},t:function(){return 'Tap one item in each row, in list order. Each pick opens the next row.'}},
  {r:function(){var w=kids(2,T.sol[2]).filter(function(j){return j!==T.sol[3]})[0];setPick(3,w);for(var k=4;k<=8;k++)PK[k]=1;$('go').textContent='Check out';buildBoard();go()},w:function(){return DEMO.done},t:function(){return 'A wrong item tips the cart. Here row 3 was wrong.'}},
  {r:function(){DEMO.done=0;nextCart();sel=T.sol.slice();for(var k=1;k<=8;k++)PK[k]=1;$('go').disabled=false;buildBoard();go()},w:function(){return DEMO.done},t:function(){return 'All 8 in order: checked out! You get <b>3 carts</b>. Fewer carts, more stars.'}},
- {r:function(){$('momw').textContent='Mom';$('momt').textContent='Forgot! Swap the Carrot for Pepper.';$('mom').hidden=false;play('text')},t:function(){return 'Some days Mom texts a swap late in your list. Follow it.'}},
+ {r:function(){$('momw').textContent='Mom';$('momt').textContent='Swap the Carrot for Pepper.';$('mom').hidden=false;play('text')},t:function(){return 'Some days Mom texts a swap late in your list. Follow it.'}},
  {r:function(){$('mom').hidden=true;pcDraw(3);$('pckb').style.transform='scaleX(.6)'},t:function(){return 'Other days, price checks. Tap the cheapest in time, or the next row loses its labels.'}},
  {r:function(){$('pc').hidden=true},t:function(){return 'One store a day, the same for everyone. Good luck!'}}];
 function stopDemo(){if(!DEMO)return;DEMO=null;anim=null;busy=false;hideOverlays();$('demoBar').hidden=true;$('demoBlock').hidden=true;setup(DAY)}
