@@ -59,7 +59,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 #turn{display:none;position:fixed;inset:0;z-index:9;background:var(--paper);align-items:center;justify-content:center;font:900 22px var(--head);text-align:center;padding:20px}
 @media (orientation:landscape) and (max-height:500px){#turn{display:flex}}
 @media (max-height:700px){.tix{flex-basis:56px}#fw{max-height:46px}#word{flex-basis:34px}.btns button{height:42px}}
-.st.lk{opacity:.3;background:#e6dfcc;box-shadow:none}</style>
+.st.lk{opacity:.3;background:#e6dfcc;box-shadow:none}.st.edge{border:3px double #8a6a2a;background:#f3e6bd;color:#1a1814;font-family:var(--head)}.st.edge.on{background:#ffe27a}.st.edge.now{background:#1a1814;color:#ffe27a}</style>
 </head>
 <body>
 <div id="app">
@@ -70,7 +70,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver">Ledder test v0.11 · Nov 3 · mockup, not live</div>
+    <div id="ver">Ledder test v0.12 · Nov 3 · mockup, not live</div>
     <div id="rc"></div>
   </div>
 </div>
@@ -126,7 +126,7 @@ function renderA(){var s=A(),P=AP[cur.A],W=P.w,sol=PA[cur.A];
  var inP=function(l,i){return s.path.some(function(q){return q[0]===l&&q[1]===i})},last=s.path[s.path.length-1],next={};
  if(!s.done){if(s.up&&last)ups(W,last[0],last[1]).forEach(function(j){if(!isLk(s,last[0]-1,j))next[(last[0]-1)+','+j]=1});else if(last)kids(W,last[0],last[1]).forEach(function(j){next[(last[0]+1)+','+j]=1});else for(var a=0;a<W[0];a++){next['0,'+a]=1;next[(n-1)+','+a]=1}}
  var o='<svg>',l,i;for(l=0;l<n-1;l++)for(i=0;i<W[l];i++)kids(W,l,i).forEach(function(j){var on=s.path.some(function(q,k){var t=s.path[k+1];if(!t)return false;var a=q[0]<t[0]?q:t,b=q[0]<t[0]?t:q;return a[0]===l&&a[1]===i&&b[1]===j});var nearD=last&&!s.up&&last[0]===l&&last[1]===i&&next[(l+1)+','+j],nearU=last&&s.up&&last[0]===l+1&&last[1]===j&&next[l+','+i];if(on||nearD||nearU)o+=trk(pos(l,i),pos(l+1,j),on)});o+='</svg>';
- for(l=0;l<n;l++)for(i=0;i<W[l];i++){var q=pos(l,i),c='st'+(l===n-1?' end':'')+(inP(l,i)?' on':'')+(last&&last[0]===l&&last[1]===i?' now':'')+(next[l+','+i]?' nx':'')+(isLk(s,l,i)?' lk':'');o+='<button class="'+c+'" data-l="'+l+'" data-i="'+i+'" style="left:'+q[0]+'px;top:'+q[1]+'px;width:'+tw+'px;height:'+th+'px">'+P.b[l][i]+'</button>'}
+ for(l=0;l<n;l++)for(i=0;i<W[l];i++){var q=pos(l,i),c='st'+(l===n-1?' end':'')+(l===0||l===n-1?' edge':'')+(inP(l,i)?' on':'')+(last&&last[0]===l&&last[1]===i?' now':'')+(next[l+','+i]?' nx':'')+(isLk(s,l,i)?' lk':'');o+='<button class="'+c+'" data-l="'+l+'" data-i="'+i+'" style="left:'+q[0]+'px;top:'+q[1]+'px;width:'+tw+'px;height:'+th+'px">'+P.b[l][i]+'</button>'}
  el.innerHTML=o;[].forEach.call(el.querySelectorAll('.st'),function(b){b.onclick=function(){tapA(+b.dataset.l,+b.dataset.i)}});
  $('btns').innerHTML='<button id="bC"'+(s.path.length>(s.anch?1:0)?'':' disabled')+'>Clear</button><button id="bS" class="go"'+(s.path.length>=3?'':' disabled')+'>'+(s.path.length&&s.path.length<3?'3+ letters':'Submit')+'</button><button id="bD">'+(s.anch?'Skip':'Done')+'</button>';
  $('bC').onclick=function(){s.path=s.anch?[s.path[0]]:[];say(s,s.anch?'Cleared. Keep going from your last letter.':'Cleared. Start in the top or bottom row.');render()};$('bS').onclick=subA;$('bD').onclick=function(){if(s.anch){s.anch=false;s.up=false;s.lock=[];s.path=[];say(s,'Free again. Start in the top or bottom row.');render();return}s.done=true;render()};
