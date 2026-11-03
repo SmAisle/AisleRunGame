@@ -70,7 +70,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver">Ledder test v0.10 · Nov 3 · mockup, not live</div>
+    <div id="ver">Ledder test v0.11 · Nov 3 · mockup, not live</div>
     <div id="rc"></div>
   </div>
 </div>
@@ -96,7 +96,7 @@ function solveB(letters){var s0=letters.split('').sort().join(''),c0=cnt(s0),can
 var PA=AP.map(solveA),PB=BP.map(solveB);
 var BCAND=BP.map(function(l){var c=cnt(l),o=[];ALL.forEach(function(w){if(w.length<=12&&fits(w,c))o.push(w)});return o});
 var mode='A',cur={A:0,B:0},SA=[],SB=[];
-function newA(){return {path:[],found:[],done:false,up:false,anch:false,lock:[],msg:'Start in the top or bottom row, then Submit.',cls:'m'}}
+function newA(){return {path:[],found:[],done:false,up:false,anch:false,lock:[],msg:'Words need 3 or more letters. Start in the top or bottom row.',cls:'m'}}
 function ups(W,l,i){var o=[];if(l<1)return o;for(var j=0;j<W[l-1];j++)if(kids(W,l-1,j).indexOf(i)>=0)o.push(j);return o}
 function isLk(s,l,i){return s.lock.some(function(q){return q[0]===l&&q[1]===i})}
 function newB(i){return {t:BP[i].split(''),gone:Array(12).fill(false),pick:[],words:[],undo:1,last:null,done:false,msg:'Tap letters in any order. Used letters leave the shelf for good.',cls:'m'}}
@@ -128,7 +128,7 @@ function renderA(){var s=A(),P=AP[cur.A],W=P.w,sol=PA[cur.A];
  var o='<svg>',l,i;for(l=0;l<n-1;l++)for(i=0;i<W[l];i++)kids(W,l,i).forEach(function(j){var on=s.path.some(function(q,k){var t=s.path[k+1];if(!t)return false;var a=q[0]<t[0]?q:t,b=q[0]<t[0]?t:q;return a[0]===l&&a[1]===i&&b[1]===j});var nearD=last&&!s.up&&last[0]===l&&last[1]===i&&next[(l+1)+','+j],nearU=last&&s.up&&last[0]===l+1&&last[1]===j&&next[l+','+i];if(on||nearD||nearU)o+=trk(pos(l,i),pos(l+1,j),on)});o+='</svg>';
  for(l=0;l<n;l++)for(i=0;i<W[l];i++){var q=pos(l,i),c='st'+(l===n-1?' end':'')+(inP(l,i)?' on':'')+(last&&last[0]===l&&last[1]===i?' now':'')+(next[l+','+i]?' nx':'')+(isLk(s,l,i)?' lk':'');o+='<button class="'+c+'" data-l="'+l+'" data-i="'+i+'" style="left:'+q[0]+'px;top:'+q[1]+'px;width:'+tw+'px;height:'+th+'px">'+P.b[l][i]+'</button>'}
  el.innerHTML=o;[].forEach.call(el.querySelectorAll('.st'),function(b){b.onclick=function(){tapA(+b.dataset.l,+b.dataset.i)}});
- $('btns').innerHTML='<button id="bC"'+(s.path.length>(s.anch?1:0)?'':' disabled')+'>Clear</button><button id="bS" class="go"'+(s.path.length>=3?'':' disabled')+'>Submit</button><button id="bD">'+(s.anch?'Skip':'Done')+'</button>';
+ $('btns').innerHTML='<button id="bC"'+(s.path.length>(s.anch?1:0)?'':' disabled')+'>Clear</button><button id="bS" class="go"'+(s.path.length>=3?'':' disabled')+'>'+(s.path.length&&s.path.length<3?'3+ letters':'Submit')+'</button><button id="bD">'+(s.anch?'Skip':'Done')+'</button>';
  $('bC').onclick=function(){s.path=s.anch?[s.path[0]]:[];say(s,s.anch?'Cleared. Keep going from your last letter.':'Cleared. Start in the top or bottom row.');render()};$('bS').onclick=subA;$('bD').onclick=function(){if(s.anch){s.anch=false;s.up=false;s.lock=[];s.path=[];say(s,'Free again. Start in the top or bottom row.');render();return}s.done=true;render()};
  $('rc').className=s.done?'show':'';if(s.done)receiptA();
 }
