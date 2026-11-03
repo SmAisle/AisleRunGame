@@ -70,7 +70,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver">Ledder test v0.12 · Nov 3 · mockup, not live</div>
+    <div id="ver">Ledder test v0.13 · Nov 3 · mockup, not live</div>
     <div id="rc"></div>
   </div>
 </div>
@@ -96,7 +96,7 @@ function solveB(letters){var s0=letters.split('').sort().join(''),c0=cnt(s0),can
 var PA=AP.map(solveA),PB=BP.map(solveB);
 var BCAND=BP.map(function(l){var c=cnt(l),o=[];ALL.forEach(function(w){if(w.length<=12&&fits(w,c))o.push(w)});return o});
 var mode='A',cur={A:0,B:0},SA=[],SB=[];
-function newA(){return {path:[],found:[],done:false,up:false,anch:false,lock:[],msg:'Words need 3 or more letters. Start in the top or bottom row.',cls:'m'}}
+function newA(){return {path:[],found:[],done:false,up:false,anch:false,both:false,lock:[],msg:'Words need 3 or more letters. Start in the top or bottom row.',cls:'m'}}
 function ups(W,l,i){var o=[];if(l<1)return o;for(var j=0;j<W[l-1];j++)if(kids(W,l-1,j).indexOf(i)>=0)o.push(j);return o}
 function isLk(s,l,i){return s.lock.some(function(q){return q[0]===l&&q[1]===i})}
 function newB(i){return {t:BP[i].split(''),gone:Array(12).fill(false),pick:[],words:[],undo:1,last:null,done:false,msg:'Tap letters in any order. Used letters leave the shelf for good.',cls:'m'}}
@@ -124,12 +124,12 @@ function renderA(){var s=A(),P=AP[cur.A],W=P.w,sol=PA[cur.A];
  var el=$('bd'),r=el.getBoundingClientRect(),w=r.width,fh=Math.min(r.height,590)-4,n=W.length;if(!w||fh<=0)return;
  var off=(r.height-fh)/2,tw=Math.min(60,w/5.7),th=Math.max(26,Math.min(46,fh/n-15)),gy=(fh-th)/(n-1),gx=w/5.02,pos=function(l,i){return [w/2+(i-(W[l]-1)/2)*gx,off+th/2+l*gy]};
  var inP=function(l,i){return s.path.some(function(q){return q[0]===l&&q[1]===i})},last=s.path[s.path.length-1],next={};
- if(!s.done){if(s.up&&last)ups(W,last[0],last[1]).forEach(function(j){if(!isLk(s,last[0]-1,j))next[(last[0]-1)+','+j]=1});else if(last)kids(W,last[0],last[1]).forEach(function(j){next[(last[0]+1)+','+j]=1});else for(var a=0;a<W[0];a++){next['0,'+a]=1;next[(n-1)+','+a]=1}}
- var o='<svg>',l,i;for(l=0;l<n-1;l++)for(i=0;i<W[l];i++)kids(W,l,i).forEach(function(j){var on=s.path.some(function(q,k){var t=s.path[k+1];if(!t)return false;var a=q[0]<t[0]?q:t,b=q[0]<t[0]?t:q;return a[0]===l&&a[1]===i&&b[1]===j});var nearD=last&&!s.up&&last[0]===l&&last[1]===i&&next[(l+1)+','+j],nearU=last&&s.up&&last[0]===l+1&&last[1]===j&&next[l+','+i];if(on||nearD||nearU)o+=trk(pos(l,i),pos(l+1,j),on)});o+='</svg>';
+ if(!s.done){if(s.both&&s.path.length===1){ups(W,last[0],last[1]).forEach(function(j){next[(last[0]-1)+','+j]=1});kids(W,last[0],last[1]).forEach(function(j){next[(last[0]+1)+','+j]=1})}else if(s.up&&last)ups(W,last[0],last[1]).forEach(function(j){if(!isLk(s,last[0]-1,j))next[(last[0]-1)+','+j]=1});else if(last)kids(W,last[0],last[1]).forEach(function(j){next[(last[0]+1)+','+j]=1});else for(var a=0;a<W[0];a++){next['0,'+a]=1;next[(n-1)+','+a]=1}}
+ var o='<svg>',l,i;for(l=0;l<n-1;l++)for(i=0;i<W[l];i++)kids(W,l,i).forEach(function(j){var on=s.path.some(function(q,k){var t=s.path[k+1];if(!t)return false;var a=q[0]<t[0]?q:t,b=q[0]<t[0]?t:q;return a[0]===l&&a[1]===i&&b[1]===j});var one=s.both&&s.path.length===1,nearD=last&&(one||!s.up)&&last[0]===l&&last[1]===i&&next[(l+1)+','+j],nearU=last&&(one||s.up)&&last[0]===l+1&&last[1]===j&&next[l+','+i];if(on||nearD||nearU)o+=trk(pos(l,i),pos(l+1,j),on)});o+='</svg>';
  for(l=0;l<n;l++)for(i=0;i<W[l];i++){var q=pos(l,i),c='st'+(l===n-1?' end':'')+(l===0||l===n-1?' edge':'')+(inP(l,i)?' on':'')+(last&&last[0]===l&&last[1]===i?' now':'')+(next[l+','+i]?' nx':'')+(isLk(s,l,i)?' lk':'');o+='<button class="'+c+'" data-l="'+l+'" data-i="'+i+'" style="left:'+q[0]+'px;top:'+q[1]+'px;width:'+tw+'px;height:'+th+'px">'+P.b[l][i]+'</button>'}
  el.innerHTML=o;[].forEach.call(el.querySelectorAll('.st'),function(b){b.onclick=function(){tapA(+b.dataset.l,+b.dataset.i)}});
  $('btns').innerHTML='<button id="bC"'+(s.path.length>(s.anch?1:0)?'':' disabled')+'>Clear</button><button id="bS" class="go"'+(s.path.length>=3?'':' disabled')+'>'+(s.path.length&&s.path.length<3?'3+ letters':'Submit')+'</button><button id="bD">'+(s.anch?'Skip':'Done')+'</button>';
- $('bC').onclick=function(){s.path=s.anch?[s.path[0]]:[];say(s,s.anch?'Cleared. Keep going from your last letter.':'Cleared. Start in the top or bottom row.');render()};$('bS').onclick=subA;$('bD').onclick=function(){if(s.anch){s.anch=false;s.up=false;s.lock=[];s.path=[];say(s,'Free again. Start in the top or bottom row.');render();return}s.done=true;render()};
+ $('bC').onclick=function(){s.path=s.anch?[s.path[0]]:[];say(s,s.anch?'Cleared. Keep going from your last letter.':'Cleared. Start in the top or bottom row.');render()};$('bS').onclick=subA;$('bD').onclick=function(){if(s.anch){s.anch=false;s.both=false;s.up=false;s.lock=[];s.path=[];say(s,'Free again. Start in the top or bottom row.');render();return}s.done=true;render()};
  $('rc').className=s.done?'show':'';if(s.done)receiptA();
 }
 function tapA(l,i){var s=A(),W=AP[cur.A].w,n=W.length;if(s.done)return;var p=s.path,last=p[p.length-1],k=-1;p.forEach(function(q,x){if(q[0]===l&&q[1]===i)k=x});
@@ -137,6 +137,7 @@ function tapA(l,i){var s=A(),W=AP[cur.A].w,n=W.length;if(s.done)return;var p=s.p
  if(!p.length){if(l===0||l===n-1){s.up=l===n-1;p.push([l,i])}else say(s,'Words start in the top or bottom row.','bad',1);render();return}
  if(k===0&&s.anch){p.length=1;render();return}
  if(k>=0){p.length=k===p.length-1?k:k+1;render();return}
+ if(s.both&&p.length===1&&Math.abs(l-last[0])===1)s.up=l<last[0];
  var nx=s.up?ups(W,last[0],last[1]):kids(W,last[0],last[1]);
  if(l===last[0]+(s.up?-1:1)&&nx.indexOf(i)>=0)p.push([l,i]);
  else if(!s.anch&&(l===0||l===n-1)){s.path=[[l,i]];s.up=l===n-1}
@@ -146,7 +147,7 @@ function subA(){var s=A(),P=AP[cur.A],w=s.path.map(function(q){return P.b[q[0]][
  if(!ALL.has(w))say(s,w+' is not in the word list.','bad',1);
  else if(s.found.some(function(f){return f.w===w}))say(s,w+' is already on your ticket.','bad',1);
  else{var wasUp=s.up,top=s.path[s.path.length-1][0]===0,inf=infl(w),bon=w.length===P.w.length&&!inf,p=pts(inf?Math.max(3,w.length-1):w.length);s.found.push({w:w,p:p,deep:bon,up:wasUp});say(s,'+'+(p+(bon?DEEPB:0))+' '+w+(bon?' · Full Line!':(inf&&w.length>3?' · easy ending, fewer points':'')),'good');if(s.found.length>=GOAL)s.done=true;
-  var e=s.path[s.path.length-1],n=P.w.length;if(e[0]===0||e[0]===n-1){s.anch=false;s.up=false;s.lock=[];s.path=[];s.msg+=' · Free start'}else{s.lock=[];for(var q0=0;q0<P.w[e[0]];q0++)if(q0!==e[1])s.lock.push([e[0],q0]);s.anch=true;s.up=!wasUp;s.path=[e];s.msg+=s.up?' · Now go up':' · Now go down'}render();return}
+  var e=s.path[s.path.length-1],n=P.w.length;s.both=false;if(e[0]===0||e[0]===n-1){s.anch=false;s.up=false;s.lock=[];s.path=[];s.msg+=' · Free start'}else{s.lock=[];for(var q0=0;q0<P.w[e[0]];q0++)if(q0!==e[1])s.lock.push([e[0],q0]);s.anch=true;s.up=!wasUp;s.path=[e];s.both=e[0]>=2&&e[0]<=4;s.msg+=s.both?' · Go up or down':s.up?' · Now go up':' · Now go down'}render();return}
  s.path=s.anch?[s.path[0]]:[];render()}
 function receiptA(){var s=A(),sol=PA[cur.A],t=scoreA(s),m=sol.common.filter(function(w){return !s.found.some(function(f){return f.w===w})}).sort(function(a,b){return b.length-a.length||(a<b?-1:1)});
  var h='<div class="rcpt"><h2>smAisle</h2><div class="sub">Ledder · No. '+(cur.A+1)+' · '+(s.found.length>=GOAL?'Goal met':'Closed early')+'</div>';
