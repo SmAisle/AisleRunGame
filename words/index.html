@@ -72,14 +72,13 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 </head>
 <body>
 <div id="app">
-  <div class="sw" role="tablist"><button id="mA"><i>A</i>Ledder</button><button id="mB"><i>B</i>Shrinking Shelf</button></div>
-  <div class="top"><div id="ttl"><b id="tt"></b><small id="ts"></small></div><div class="nums2" id="pn"></div></div>
+    <div class="top"><div id="ttl"><b id="tt"></b><small id="ts"></small></div><div class="nums2" id="pn"></div></div>
   <div id="stage">
     <div class="tix"><div class="nums" id="nums"></div><div id="fw"></div></div>
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.18 · Nov 3 · not live</div>
+    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.19 · Nov 3 · not live</div>
     <div id="rc"></div>
   </div>
 </div>
@@ -130,7 +129,7 @@ function scoreB(s){return s.words.reduce(function(a,f){return a+f.p},0)+(cleared
 function possible(s,i){var c=cnt(rest(s));return BCAND[i].filter(function(w){return fits(w,c)}).length}
 function say(s,t,c,shake){s.msg=t;s.cls='m '+(c||'')+(shake?' sh':'')}
 function render(){
- $('mA').className=mode==='A'?'on':'';$('mB').className=mode==='B'?'on':'';
+ 
  $('tt').textContent=mode==='A'?'Ledder':'Shrinking Shelf';
  $('ts').textContent='No. '+(cur[mode]+1)+' · '+(mode==='A'?'Goal '+GOAL+' words':'12 letters');
  var h='';for(var i=0;i<5;i++){var dn=(mode==='A'?SA:SB)[i].done;h+='<button class="nb'+(i===cur[mode]?' on':'')+(dn?' dn':'')+'" data-n="'+i+'" aria-label="Puzzle '+(i+1)+'">'+(i+1)+'</button>'}
@@ -206,7 +205,7 @@ function receiptB(){var s=B(),b=PB[cur.B],t=scoreB(s),c=cleared(s),left=rest(s);
  if(c)h+='<div class="ln bon"><span>Cleared all 12</span><i></i><span>+'+CLEARB+'</span></div>';
  h+='<div class="ln tot"><span>Total</span><i></i><span>'+t+'</span></div><div class="note"><b>Best solution:</b> '+b.w.join(' + ')+' = '+b.p+(b.left?' with '+b.left+' left over':', all 12 cleared')+'.'+(t>b.p?' You beat it.':'')+(left.length&&!c?' <b>Stuck with:</b> '+left.split('').join(' ')+'.':'')+'</div><div class="rb">'+(s.undo&&s.last&&!c?'<button id="rU">Undo last word</button>':'<button id="rP">Play again</button>')+'<button id="rN" class="go">Next puzzle</button></div></div>';
  $('rc').innerHTML=h;if($('rU'))$('rU').onclick=undoB;else $('rP').onclick=function(){SB[cur.B]=newB(cur.B);render()};$('rN').onclick=function(){cur.B=(cur.B+1)%5;render()}}
-$('mA').onclick=function(){mode='A';render()};$('mB').onclick=function(){mode='B';render()};
+
 var dTok=0,dSave=null,dTm=null;
 function dTap(q){var s=SA[0];tapA(q[0],q[1])}
 function demoEnd(){dTok++;clearTimeout(dTm);if(!dSave)return;SA[0]=dSave.s;cur.A=dSave.c;mode=dSave.m;dSave=null;$('dm').className='';render()}
