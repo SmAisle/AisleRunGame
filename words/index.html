@@ -86,6 +86,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 .tix{cursor:pointer}
 #wl{position:fixed;inset:0;z-index:7;display:none;align-items:center;justify-content:center;background:rgba(244,239,225,.86);padding:16px}#wl.show{display:flex}
 .wc{width:100%;max-width:320px;max-height:100%;display:flex;flex-direction:column;background:var(--card);border:2px solid var(--ink);border-radius:4px;box-shadow:4px 4px 0 var(--ink);padding:12px 14px}.wc h2{margin:0 0 6px;font:900 22px/1.1 var(--head);text-align:center;border-bottom:3px double var(--ink);padding-bottom:6px;flex:none}#wlb{flex:1;min-height:0;overflow-y:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch}#wlb .ln{font-size:14px}#wlt{flex:none}.wc button{flex:none;height:42px;margin-top:9px;border:0;border-radius:4px;background:var(--ink);color:var(--paper);font:800 14px var(--sans)}
+.st.wig{background:#f8d4cf!important;border-color:var(--red);color:var(--red);animation:wg .36s 2}@keyframes wg{25%{transform:translate(calc(-50% - 4px),-50%) rotate(-3deg)}75%{transform:translate(calc(-50% + 4px),-50%) rotate(3deg)}}
 </style>
 </head>
 <body>
@@ -96,14 +97,14 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.32 · Nov 3 · not live</div>
+    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.33 · Nov 3 · not live</div>
     <div id="rc"></div>
   </div>
 </div>
 <div id="cv"><div class="cm"><h1>Ledder</h1><p>A word path through <span id="cvt">seven</span> rows</p>
 <div class="cm-t"><span>M</span><span>A</span><span>T</span></div>
 <button id="cvP">Play</button><button id="cvH">How to Play</button></div>
-<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.32 · Nov 3 · test</div></div>
+<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.33 · Nov 3 · test</div></div>
 <div id="hp"><div class="hc"><h2>How to Play Ledder</h2>
 <div class="hl"><b>Goal</b><span>Score points. Earn 3 stars.</span></div>
 <div class="hl"><b>Start</b><span>Your first word starts in the top row.</span></div>
@@ -178,7 +179,7 @@ function renderA(){var s=A(),P=AP[cur.A],W=P.w,sol=PA[cur.A];
  $('bC').onclick=function(){s.warn='';s.path=s.anch?[s.path[0]]:[];say(s,s.anch?'Cleared. Keep going from your last letter.':(s.found.length?'Free start. Begin on any letter.':'Pick a letter in the top row to start.'));render()};$('bS').onclick=subA;$('bK').onclick=function(){if(!s.done){s.menu=true;render()}}}
  $('rc').className=s.done?'show':'';if(s.done)receiptA();
 }
-function tapA(l,i){var s=A(),W=AP[cur.A].w,n=W.length;if(s.done||s.menu)return;s.quiet=0;var p=s.path,last=p[p.length-1],k=-1;p.forEach(function(q,x){if(q[0]===l&&q[1]===i)k=x});
+function tapA(l,i){var s=A(),W=AP[cur.A].w,n=W.length;if(s.done||s.menu||s.busy)return;s.quiet=0;var p=s.path,last=p[p.length-1],k=-1;p.forEach(function(q,x){if(q[0]===l&&q[1]===i)k=x});
  if(isLk(s,l,i)){say(s,'Keep going from your last letter. This row is locked.','bad',1);render();return}
  var first=!s.found.length,begin=function(){s.path=[[l,i]];s.up=l===n-1;s.both=!first&&l>0&&l<n-1};
  if(!p.length){if(first&&l!==0)say(s,'Pick a letter in the top row to start.','bad',1);else begin();render();return}
@@ -197,14 +198,15 @@ function endsDead(s,P,w){var e=s.path[s.path.length-1],n=P.w.length;if(e[0]===0|
 var freeSeen=false;function seenFree(){if(freeSeen)return true;try{return !!localStorage.getItem('ledder-free')}catch(e){return false}}
 function freeCard(top){freeSeen=true;try{localStorage.setItem('ledder-free','1')}catch(e){}$('frw').textContent='You reached the '+(top?'top':'bottom');$('fr').className='show'}
 function undoA(){var s=A();if(s.undone||s.done||!s.hist.length)return;var h=s.hist.pop();s.undone=true;var f=s.found.pop();s.menu=false;s.quiet=1;s.dead.push(f.w);s.st=stars(scoreA(s));s.anch=h.anch;s.up=h.up;s.both=h.both;s.lock=h.lock;s.path=h.path;say(s,f.w+' is gone and can\'t be played again.','bad');render()}
-function subA(){var s=A(),P=AP[cur.A],w=s.path.map(function(q){return P.b[q[0]][q[1]]}).join(''),deep=s.path[s.path.length-1][0]===P.w.length-1;
+function subA(){if(A().busy)return;var s=A(),P=AP[cur.A],w=s.path.map(function(q){return P.b[q[0]][q[1]]}).join(''),deep=s.path[s.path.length-1][0]===P.w.length-1;
  if(!ALL.has(w))say(s,w+' is not in the word list.','bad',1);
  else if(s.found.some(function(f){return f.w===w}))say(s,w+' is already on your ticket.','bad',1);
  else if(s.dead.indexOf(w)>=0)say(s,w+' was undone. Try another word.','bad',1);
  else if(s.warn!==w&&endsDead(s,P,w)){s.warn=w;say(s,w+' is a dead end. Pick another word or play it anyway.','bad',1);render();return}
  else{s.warn='';s.hist.push({anch:s.anch,up:s.up,both:s.both,lock:s.lock.slice(),path:s.anch?[s.path[0]]:[]});var wasUp=s.up,top=s.path[s.path.length-1][0]===0,inf=infl(w),bon=w.length===P.w.length&&!inf,p=pts(inf?Math.max(3,w.length-1):w.length);s.found.push({w:w,p:p,deep:bon,up:wasUp});say(s,'+'+(p+(bon?DEEPB:0))+' '+w+(bon?' · Full Line!':(inf&&w.length>3?' · easy ending, fewer points':'')),'good');var sc=scoreA(s),ks=stars(sc);if(ks>s.st){s.st=ks;s.msg=['','First','Second','Third'][ks]+' star! '+starS(sc);s.flash=1}
   var e=s.path[s.path.length-1],n=P.w.length;s.both=false;if(e[0]===0||e[0]===n-1){s.anch=false;s.up=false;s.lock=[];s.path=[];s.msg+=' · Free start: begin on any letter';s.gain=p+(bon?DEEPB:0);s.quiet=0;if(!seenFree()&&!dSave)freeCard(top)}else{s.lock=[];for(var q0=0;q0<P.w[e[0]];q0++)if(q0!==e[1])s.lock.push([e[0],q0]);s.anch=true;s.up=!wasUp;s.path=[e];s.both=e[0]>=2&&e[0]<=n-3;s.msg+=s.both?' · Go up or down':s.up?' · Now go up':' · Now go down'}render();return}
- s.path=s.anch?[s.path[0]]:[];render()}
+ badA(s)}
+function badA(s){s.busy=1;var w=$('word');w.textContent=s.msg;w.className='';void w.offsetWidth;w.className='m bad sh';[].forEach.call(document.querySelectorAll('.st'),function(e){if(s.path.some(function(q){return q[0]===+e.dataset.l&&q[1]===+e.dataset.i}))e.classList.add('wig')});setTimeout(function(){s.busy=0;s.quiet=0;s.path=s.anch?[s.path[0]]:[];s.both=s.anch?s.both:false;if(!s.anch&&!s.found.length)say(s,'Pick a letter in the top row to start.');render()},800)}
 function receiptA(){var s=A(),sol=PA[cur.A],t=scoreA(s),m=sol.common.filter(function(w){return !s.found.some(function(f){return f.w===w})}).sort(function(a,b){return b.length-a.length||(a<b?-1:1)});
  var h='<div class="rcpt"><h2>smAisle</h2><div class="sub">Ledder · '+starS(t)+' · '+s.found.length+' words'+'</div>';
  if(s.found.length)h+='<div class="note">'+s.found.map(function(f){return f.deep?'<b>'+f.w+'</b>':f.w}).join(' · ')+'</div>';var fl=s.found.filter(function(f){return f.deep}).length;if(fl)h+='<div class="ln bon"><span>Full Lines ('+fl+')</span><i></i><span>+'+fl*DEEPB+'</span></div>';
