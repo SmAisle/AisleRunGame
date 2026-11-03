@@ -68,6 +68,11 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 #dm{position:fixed;inset:0;z-index:6;display:none}#dm.show{display:block}
 #dc{position:absolute;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 8px);width:calc(100% - 28px);max-width:452px;min-height:92px;background:var(--ink);color:var(--paper);border-radius:4px;padding:10px 12px;display:flex;align-items:center;gap:10px;font:700 14.5px/1.3 var(--sans);box-shadow:3px 3px 0 var(--shadow)}
 #dt{flex:1;min-width:0}#dx{flex:none;height:36px;padding:0 10px;border:2px solid var(--paper);border-radius:4px;background:none;color:var(--paper);font:800 12.5px var(--sans)}
+#cv{position:fixed;inset:0;z-index:5;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px calc(env(safe-area-inset-bottom,0px) + 46px)}#cv.off{display:none}
+.cm{width:100%;max-width:300px;text-align:center}.cm h1{margin:0;font:900 58px/1 var(--head)}.cm p{margin:8px 0 26px;font:700 14px/1.3 var(--sans);color:var(--ink2)}
+.cm-t{display:flex;justify-content:center;gap:10px;margin-bottom:32px}.cm-t span{width:56px;height:52px;display:grid;place-items:center;border:3px double #8a6a2a;border-radius:5px;background:#f3e6bd;font:900 26px/1 var(--head);box-shadow:2px 2px 0 rgba(0,0,0,.3)}
+.cm button{display:block;width:100%;height:52px;border:2px solid var(--ink);border-radius:4px;background:var(--card);font:800 16px var(--sans);box-shadow:2px 2px 0 var(--shadow);margin-top:10px}.cm #cvP{background:var(--ink);color:var(--paper)}
+.cf{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);text-align:center;font:700 12px var(--sans);color:var(--ink2)}.cf a{color:var(--ink);font-weight:800}
 </style>
 </head>
 <body>
@@ -78,10 +83,14 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.19 · Nov 3 · not live</div>
+    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.20 · Nov 3 · not live</div>
     <div id="rc"></div>
   </div>
 </div>
+<div id="cv"><div class="cm"><h1>Ledder</h1><p>A word path through seven rows</p>
+<div class="cm-t"><span>M</span><span>A</span><span>T</span></div>
+<button id="cvP">Play</button><button id="cvH">How to Play</button></div>
+<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.20 · Nov 3 · test</div></div>
 <div id="hp"><div class="hc"><h2>How to Play Ledder</h2>
 <ul><li><b>Find 8 words</b> on the path through the rows.</li>
 <li><b>Start</b> on a gold letter in the top or bottom row.</li>
@@ -208,8 +217,8 @@ function receiptB(){var s=B(),b=PB[cur.B],t=scoreB(s),c=cleared(s),left=rest(s);
 
 var dTok=0,dSave=null,dTm=null;
 function dTap(q){var s=SA[0];tapA(q[0],q[1])}
-function demoEnd(){dTok++;clearTimeout(dTm);if(!dSave)return;SA[0]=dSave.s;cur.A=dSave.c;mode=dSave.m;dSave=null;$('dm').className='';render()}
-function demo(){$('hp').className='';dSave={s:SA[0],c:cur.A,m:mode};SA[0]=newA();cur.A=0;mode='A';$('dm').className='show';render();var tok=++dTok;
+function demoEnd(){dTok++;clearTimeout(dTm);if(!dSave)return;SA[0]=dSave.s;cur.A=dSave.c;mode=dSave.m;$('cv').className=dSave.cv;dSave=null;$('dm').className='';render()}
+function demo(){$('hp').className='';dSave={s:SA[0],c:cur.A,m:mode,cv:$('cv').className};$('cv').className='off';SA[0]=newA();cur.A=0;mode='A';$('dm').className='show';render();var tok=++dTok;
  var E=[3,0],steps=[
  ['t','Start on a gold letter in the top or bottom row.',2600],
  ['t','Spell a word one row at a time. Each letter touches the last, straight or one tile over.',800],
@@ -231,7 +240,7 @@ function demo(){$('hp').className='';dSave={s:SA[0],c:cur.A,m:mode};SA[0]=newA()
   var q=st[1],k=0;(function nx(){if(tok!==dTok)return;if(k<q.length){tapA(q[k][0],q[k][1]);k++;dTm=setTimeout(nx,520);return}dTm=setTimeout(function(){if(tok!==dTok)return;subA();dTm=setTimeout(run,1500)},650)})()}
  run()}
 $('hpb').onclick=function(){$('hp').className='show'};$('hpC').onclick=function(){$('hp').className=''};$('hpD').onclick=demo;$('dx').onclick=demoEnd;
-try{if(!localStorage.getItem('ledder-help')){$('hp').className='show';localStorage.setItem('ledder-help','1')}}catch(e){}
+$('cvP').onclick=function(){$('cv').className='off';render()};$('cvH').onclick=function(){$('hp').className='show'};
 var rz;addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(render,60)});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(render);
 window.WT={report:{A:PA.map(function(p,i){return {all:p.all.length,common:p.common.length,deep:p.deep,ok:p.common.length>=25&&p.deep.length>0&&AP[i].w.length>=5&&AP[i].w.length<=7}}),B:PB.map(function(b){return {best:b.w,score:b.p,left:b.left,ok:b.left<=2}})},PA:PA,PB:PB,BCAND:BCAND,AP:AP,BP:BP,get:function(){return mode==='A'?A():B()},kids:kids};
