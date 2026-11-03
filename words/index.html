@@ -70,7 +70,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver">Word test v0.4 · Nov 3 · mockup, not live</div>
+    <div id="ver">Word test v0.5 · Nov 3 · mockup, not live</div>
     <div id="rc"></div>
   </div>
 </div>
@@ -123,7 +123,7 @@ function renderA(){var s=A(),P=AP[cur.A],W=P.w,sol=PA[cur.A];
  var off=(r.height-fh)/2,tw=Math.min(60,w/5.7),th=Math.max(26,Math.min(46,fh/n-15)),gy=(fh-th)/(n-1),gx=w/5.02,pos=function(l,i){return [w/2+(i-(W[l]-1)/2)*gx,off+th/2+l*gy]};
  var inP=function(l,i){return s.path.some(function(q){return q[0]===l&&q[1]===i})},last=s.path[s.path.length-1],next={};
  if(!s.done){if(s.up)ups(W,last[0],last[1]).forEach(function(j){if(!isLk(s,last[0]-1,j))next[(last[0]-1)+','+j]=1});else if(last)kids(W,last[0],last[1]).forEach(function(j){next[(last[0]+1)+','+j]=1});else for(var a=0;a<W[0];a++)next['0,'+a]=1}
- var o='<svg>',l,i;for(l=0;l<n-1;l++)for(i=0;i<W[l];i++)kids(W,l,i).forEach(function(j){var on=s.path.some(function(q,k){var t=s.path[k+1];if(!t)return false;var a=q[0]<t[0]?q:t,b=q[0]<t[0]?t:q;return a[0]===l&&a[1]===i&&b[1]===j});o+=trk(pos(l,i),pos(l+1,j),on)});o+='</svg>';
+ var o='<svg>',l,i;for(l=0;l<n-1;l++)for(i=0;i<W[l];i++)kids(W,l,i).forEach(function(j){var on=s.path.some(function(q,k){var t=s.path[k+1];if(!t)return false;var a=q[0]<t[0]?q:t,b=q[0]<t[0]?t:q;return a[0]===l&&a[1]===i&&b[1]===j});var nearD=last&&!s.up&&last[0]===l&&last[1]===i&&next[(l+1)+','+j],nearU=last&&s.up&&last[0]===l+1&&last[1]===j&&next[l+','+i];if(on||nearD||nearU)o+=trk(pos(l,i),pos(l+1,j),on)});o+='</svg>';
  for(l=0;l<n;l++)for(i=0;i<W[l];i++){var q=pos(l,i),c='st'+(l===n-1?' end':'')+(inP(l,i)?' on':'')+(last&&last[0]===l&&last[1]===i?' now':'')+(next[l+','+i]?' nx':'')+(isLk(s,l,i)?' lk':'');o+='<button class="'+c+'" data-l="'+l+'" data-i="'+i+'" style="left:'+q[0]+'px;top:'+q[1]+'px;width:'+tw+'px;height:'+th+'px">'+P.b[l][i]+'</button>'}
  el.innerHTML=o;[].forEach.call(el.querySelectorAll('.st'),function(b){b.onclick=function(){tapA(+b.dataset.l,+b.dataset.i)}});
  $('btns').innerHTML='<button id="bC"'+(s.path.length>(s.up?1:0)?'':' disabled')+'>Clear</button><button id="bS" class="go"'+(s.path.length>=3?'':' disabled')+'>Submit</button><button id="bD">'+(s.up?'Skip up':'Done')+'</button>';
