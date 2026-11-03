@@ -1,0 +1,14 @@
+/* Checks every store for 1,400 days: one right tile per row on a joined route, no repeats, one surprise a day, same result each time. Prints how hard each weekday is. Run: node source/check.js */
+const fs=require('fs'),vm=require('vm'),path=require('path');const f=n=>fs.readFileSync(path.join(__dirname,n),'utf8');
+const c={Math,console};vm.createContext(c);vm.runInContext(f('icons.js')+f('stores.js')+f('puzzle.js')+';this.X={make,setStore,kids,BW,STORES,hardness}',c);const {make,setStore,kids,BW,STORES}=c.X;
+const DN=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];let bad=0;const R=Math.random;
+for(const k of ['grocery','hardware','pet']){setStore(k);const by=DN.map(()=>({n:0,near:0,nearList:0,nearLook:0,mom:0,w:[0,0,0,0]}));
+ for(let n=1;n<=1400;n++){const d=(n+0)%7,T=make(n,d),T2=make(n,d),s=by[d];if(JSON.stringify(T)!==JSON.stringify(T2)){bad++;console.log('not repeatable',k,n)}s.n++;if(T.mode==='mom')s.mom++;
+  if(T.list.length!==8||new Set(T.need).size!==8){bad++;console.log('list',k,n)}if((T.mode==='mom')!==!!T.swap){bad++;console.log('mode',k,n)}
+  for(let l=1;l<=8;l++){const row=[];for(let i=0;i<BW[l];i++)row.push(T.t[l+','+i]);if(new Set(row).size!==row.length||row.some(x=>!x)){bad++;console.log('dup',k,n,l)}if(T.t[l+','+T.sol[l]]!==T.need[l-1]||row.filter(x=>x===T.need[l-1]).length!==1){bad++;console.log('sol',k,n,l)}if(kids(l-1,T.sol[l-1]).indexOf(T.sol[l])<0){bad++;console.log('path',k,n,l)}
+   const fm=STORES[k].fam.find(f=>f.includes(T.need[l-1]))||[];kids(l-1,T.sol[l-1]).forEach(i=>{if(i===T.sol[l])return;s.near++;const x=T.t[l+','+i];if(T.need.includes(x))s.nearList++;if(fm.includes(x))s.nearLook++})}
+  if(T.swap){const row=[];for(let i=0;i<BW[T.swap.row];i++)row.push(T.t[T.swap.row+','+i]);const i=row.indexOf(T.swap.from);if(i<0||kids(T.swap.row-1,T.sol[T.swap.row-1]).indexOf(i)<0){bad++;console.log('mom trap',k,n)}}
+  /* a player who remembers 70% of items, learning from each tipped cart */
+  const known={},tried={};let won=0;for(let cart=1;cart<=3&&!won;cart++){let cur=0,ok=true;for(let l=1;l<=8;l++){const ks=kids(l-1,cur),z=R();let p;if(known[l]!==undefined)p=known[l];else{const fm2=ks.filter(i=>(STORES[k].fam.find(f=>f.includes(T.need[l-1]))||[]).includes(T.t[l+','+i])||T.need.includes(T.t[l+','+i]));if(z<.7)p=T.sol[l];else{const o=(fm2.length?fm2:ks).filter(i=>!(tried[l]||[]).includes(i));p=(o.length?o:ks)[Math.floor(R()*(o.length||ks.length))]}}if(p!==T.sol[l]){(tried[l]=tried[l]||[]).push(p);ok=false;break}known[l]=p;cur=p}if(ok)won=cart}s.w[won]++}
+ console.log(k,'  day  mom%  nearby list-trap%  nearby look-alike%  cart1% cart2% cart3% lost%');by.forEach((s,i)=>console.log('  ',DN[i],(100*s.mom/s.n).toFixed(0).padStart(4),(100*s.nearList/s.near).toFixed(0).padStart(10),(100*s.nearLook/s.near).toFixed(0).padStart(14),...[1,2,3,0].map(q=>(100*s.w[q]/s.n).toFixed(0).padStart(8))))}
+console.log(bad?'FAILED '+bad:'All good');process.exit(bad?1:0)
