@@ -85,6 +85,7 @@ html[data-mode=navy] .go{border-color:var(--btn)}
 
 <div id="study" hidden><div class="cd"><h2>Your list</h2><ul id="ol"></ul><div id="surp"></div><div id="clk"><i id="clkb"></i></div><p>Remember the order. Your route must pick up these 8 items, top row to bottom.</p><button class="go" id="ready">Ready to shop</button></div></div>
 <div id="pc" hidden><div class="cd"><h2>Price check!</h2><p>Tap the cheapest one.</p><div id="pcr"></div><div id="pck"><i id="pckb"></i></div></div></div>
+<div class="sheet" id="nt" hidden><div class="card" style="text-align:center"><h2 id="ntH"></h2><p id="ntM" style="margin:0;font-size:17px"></p><button class="go" id="ntGo">Got it</button></div></div>
 <div id="mom" hidden><div class="tm"><div class="tmh"><div class="tma" id="moma">M</div><b id="momw">Mom</b></div><div class="tmb"><small><b>Text Message</b> · Now</small><p>Forgot!</p><p id="momt"></p></div><button class="tmg" id="momGo">Got it</button></div></div>
 
 <div id="app">
@@ -111,7 +112,7 @@ html[data-mode=navy] .go{border-color:var(--btn)}
 </div></div>
 
 <div class="sheet" id="help" hidden><div class="card"><button class="x" data-close aria-label="Close">✕</button><h2>How to Play</h2>
-  <ol class="how"><li><b>3 rounds</b>, a new list of <b>8 items</b> each. Study it in order for <b>17 seconds</b>, then <b>12</b>, then <b>8</b>.</li><li>Then the list goes away. Tap one item in every row to build your <b>route</b>, row 1 to row 8. Each pick opens the next row.</li><li>Tap <b>PAY</b>. Your cart rolls the route and picks up each item in order. A wrong item tips the cart.</li><li>You have <b>2 carts</b> each round. Run out and the game ends. Each round cleared earns a <b>star</b>.</li><li>Some days Mom texts a swap. Other days there are price checks.</li><li>One store a day, the same for everyone. Monday is easiest, Sunday is hardest.</li></ol>
+  <ol class="how"><li><b>3 rounds</b>, a new list of <b>8 items</b> each. Study it in order for <b>17 seconds</b>, then <b>12</b>, then <b>8</b>.</li><li>Then the list goes away. Tap one item in every row to build your <b>route</b>, row 1 to row 8. Each pick opens the next row.</li><li>Tap <b>PAY</b>. Your cart rolls the route and picks up each item in order. A wrong item tips the cart.</li><li>You have <b>2 carts</b> each round. Run out and the game ends. Each round cleared earns a <b>star</b>.</li><li>Round 1: Mom texts a swap. Later rounds: a sale changes your list, or an item expires and you go back.</li><li>One store a day, the same for everyone. Monday is easiest, Sunday is hardest.</li></ol>
   <button class="go" id="helpDemo">Watch the demo</button><div class="ver" id="helpVer"></div></div></div>
 
 <div class="sheet" id="menu" hidden><div class="card"><button class="x" data-close aria-label="Close">✕</button><h2>Menu</h2>
@@ -147,7 +148,7 @@ html[data-mode=navy] .go{border-color:var(--btn)}
 (function(){
 /* Settings. PLUS_GAME false = standard game with no preview. STORES_LIVE = the stores that run in the daily rotation; the others open only with ?store=. */
 var PLUS_GAME=true,PV_ROWS=3,STORES_LIVE=['grocery'],MAXC=2,ROUNDS=3,STUDY=[17000,12000,8000],SHARE_URL='https://smaisle.app/AisleRunGame/';
-var VERSION='1.3',VDATE='Nov 3',NAME='{{NAME}}',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
+var VERSION='1.4',VDATE='Nov 3',NAME='{{NAME}}',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 var VTXT='v'+VERSION+' · '+VDATE,$=function(i){return document.getElementById(i)};
 var WEB=/github\.io$|smaisle\.app$/.test(location.hostname);
 var store={get:function(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},json:function(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v===null?d:v}catch(e){return d}},put:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -214,7 +215,7 @@ function previewUI(){var pv=PREVIEW();$('mPlus').hidden=!pv;['coverPast','mPast'
 if(WEB||window.DG_APP){$('coverHub').hidden=false;$('cover').classList.add('hub');$('mHub').hidden=false;$('coverHub').onclick=function(e){if(window.DG_APP){e.preventDefault();toApp({cmd:'home'})}}}
 dark();snd();previewUI();setup(TODAY);size();requestAnimationFrame(loop);
 if(store.get(TERMS,'')){cover();checkIn('open')}else only('terms');
-window.__st=function(k){return STORES[k]};window.__rg=function(){return {T:T,RUN:RUN,KEEP:KEEP,FREE:FREE,sel:sel,DEMO:DEMO,CUR:CUR.key,share:share(),stats:statsOf(),hardness:hardness,make:make,setStore:setStore,kids:kids,BW:BW,keys:Object.keys(STORES),live:STORES_LIVE,day:DAY}};
+window.__mr=makeR;window.__kd=kindOf;window.__st=function(k){return STORES[k]};window.__rg=function(){return {T:T,RUN:RUN,KEEP:KEEP,FREE:FREE,sel:sel,DEMO:DEMO,CUR:CUR.key,share:share(),stats:statsOf(),hardness:hardness,make:make,setStore:setStore,kids:kids,BW:BW,keys:Object.keys(STORES),live:STORES_LIVE,day:DAY}};
 })();
 </script>
 </body>
