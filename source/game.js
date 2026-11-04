@@ -1,5 +1,5 @@
 /* play state. RUN is what gets saved for the day; KEEP holds the locked result during Keep playing. */
-var T,sel=null,PK={},busy=false,NOW=-1,lock=false,G={p:0,tip:-1,sp:0},idx=0,best=0,RUN=null,KEEP=null,FREE=false,DEMO=null,DAY=TODAY,PAST=false,tOn=0,gone={},SPILL=[],RS={},anim=null,last=0,dirty=true,recT=null;
+var T,sel=null,PK={},busy=false,NOW=-1,lock=false,G={p:0,tip:-1,sp:0},idx=0,best=0,RUN=null,KEEP=null,FREE=false,DAY=TODAY,PAST=false,tOn=0,gone={},SPILL=[],RS={},anim=null,last=0,dirty=true,recT=null;
 var cv=$('sc'),Y=cv.getContext('2d'),W=340,H=100;
 var skey=function(d){return 'rg-d_'+d};
 function fresh(){return {s:CUR.key,rd:1,cl:0,tot:0,n:0,b:0,ms:0,pen:{},pc:{}}}
@@ -8,10 +8,10 @@ function kindOf(n,rd){if(TRY)rd=0;if(rd===1||TRY==='mom')return {kind:'mom',a:5,
 function makeR(n,d,rd){return make(n+TRYN+(rd-1)*100000,d,kindOf(n,rd))}
 function advance(){RUN.rd=(RUN.rd||1)+1;RUN.n=0;RUN.b=0;RUN.st=0;RUN.sd=0;RUN.sel=null;RUN.pk={};RUN.pen={};RUN.pc={};delete RUN.wait}
 function liveStore(n){return STORES_LIVE[(n-1)%STORES_LIVE.length]}
-function save(){if(DEMO||FREE||TESTK||!RUN)return;store.put(skey(DAY),RUN)}
-function playing(){return !!RUN&&!!RUN.sd&&!RUN.over&&!FREE&&!DEMO&&$('cover').hidden}
+function save(){if(FREE||TESTK||!RUN)return;store.put(skey(DAY),RUN)}
+function playing(){return !!RUN&&!!RUN.sd&&!RUN.over&&!FREE&&$('cover').hidden}
 /* study and shop time only counts while the game is open */
-function pause(){if(tOn&&RUN&&!RUN.over&&!FREE&&!DEMO){RUN.ms+=Date.now()-tOn;save()}tOn=0}
+function pause(){if(tOn&&RUN&&!RUN.over&&!FREE){RUN.ms+=Date.now()-tOn;save()}tOn=0}
 function NV(){return document.documentElement.dataset.mode==='navy'}
 /* fresh clip ids on every draw: a cached copy shares ids with the hidden list screen and its clip stops working */
 function ic(n){return '<svg viewBox="0 0 100 100" aria-hidden="true">'+flat(CUR.I[n])+'</svg>'}
@@ -19,7 +19,7 @@ function ras(n){var k=CUR.key+':'+n;if(RS[k])return RS[k];var c=document.createE
 function nmz(n){return CUR.short[n]||n}
 function say(a,b){$('m').textContent=a;$('m2').textContent=b||''}
 function adj(l,i,j){return kids(l,i).indexOf(j)>=0}
-function pv(){return PREVIEW()&&!PAST&&!DEMO&&!FREE}
+function pv(){return PREVIEW()&&!PAST&&!FREE}
 function ready(){var a=true,e=pv()?PV_ROWS:8;for(var k=1;k<=e;k++)if(!PK[k])a=false;if(/Check out|Roll/.test($('go').textContent))$('go').disabled=!a}
 function reach(){var r=1;while(r<9&&PK[r])r++;return r}
 function hideOverlays(){$('study').hidden=true;$('pc').hidden=true;$('mom').hidden=true;$('nt').hidden=true;clearInterval(clkT)}
@@ -28,7 +28,7 @@ function buildBoard(){if(!T||!sel)return;var RC=reach(),PV=pv();var el=$('bd'),r
  for(l=0;l<=9;l++)for(i=0;i<BW[l];i++){var q=pos(l,i),fx=l===0||l===9,on=!fx&&PK[l]&&sel[l]===i,nw=NOW===l&&(fx||sel[l]===i),pa=NOW>l&&on,nm=fx?'':T.t[l+','+i];nm=nm&&nmz(nm);var hd=!fx&&(PV&&l>PV_ROWS||l>RC&&!busy&&NOW<0),off=!fx&&!hd&&l>1&&l<=RC&&!on&&!adj(l-1,sel[l-1],i);o+='<button class="st'+(on?' on':'')+(hd?' hid':'')+(off?' off':'')+(gone[l+','+i]?' gon':'')+(l===9&&!busy&&reach()===9&&NOW<9&&goT==='Check out'?' pay':'')+(nw?' now':'')+(pa?' pa':'')+(fx?' fx':'')+'" data-l="'+l+'" data-i="'+i+'" style="left:'+q[0]+'px;top:'+q[1]+'px;width:'+(fx?96:tw)+'px;height:'+th+'px">'+(fx?(l?'PAY':'CART'):hd?'?':gone[l+','+i]?'':ic(T.t[l+','+i])+(RUN&&RUN.pen[l]?'':'<span'+(nm.length>=7?' class="sm'+(nm.length>=11?' xs':'')+'"':'')+'>'+nm+'</span>'))+'</button>'}
  el.innerHTML=o;[].forEach.call(el.querySelectorAll('.st'),function(b){b.onclick=function(){tapTile(+b.dataset.l,+b.dataset.i)}})}
 function setPick(l,i){sel[l]=i;PK[l]=1;for(var k=l+1;k<=8;k++){PK[k]=0;sel[k]=kids(k-1,sel[k-1])[0]}}
-function tapTile(l,i){if(DEMO)return;var lb=$('go').textContent;if(l===9&&!busy&&!$('go').disabled&&/Check out|See receipt/.test(lb)){go();return}if(busy||lock||l===0||l===9)return;var PV=pv();if(PV&&l>PV_ROWS)return;if(lb==='Next round')return;if(lb==='Next cart')nextCart();if(l>reach())return;if(l>1&&!adj(l-1,sel[l-1],i))return;setPick(l,i);if(!FREE){RUN.sel=sel;RUN.pk=PK;save()}play('tap');ready();buildBoard();if(PV&&reach()>PV_ROWS)say('Preview: first '+PV_ROWS+' rows.','Tap Roll to see how you did.');else if(reach()<9)say('Row '+reach()+' is open.','Pick the next item on your list.');else say('Route set.','Tap PAY to check out.');
+function tapTile(l,i){var lb=$('go').textContent;if(l===9&&!busy&&!$('go').disabled&&/Check out|See receipt/.test(lb)){go();return}if(busy||lock||l===0||l===9)return;var PV=pv();if(PV&&l>PV_ROWS)return;if(lb==='Next round')return;if(lb==='Next cart')nextCart();if(l>reach())return;if(l>1&&!adj(l-1,sel[l-1],i))return;setPick(l,i);if(!FREE){RUN.sel=sel;RUN.pk=PK;save()}play('tap');ready();buildBoard();if(PV&&reach()>PV_ROWS)say('Preview: first '+PV_ROWS+' rows.','Tap Roll to see how you did.');else if(reach()<9)say('Row '+reach()+' is open.','Pick the next item on your list.');else say('Route set.','Tap PAY to check out.');
  if(PV||FREE)return;
  if(T.kind==='mom'&&l===3&&!RUN.pc.m){RUN.pc.m=1;save();showMom()}
  if(T.kind==='exp'&&l===T.swap.row+2&&!RUN.pc.m&&T.t[T.swap.row+','+sel[T.swap.row]]===T.swap.from){RUN.pc.m=1;save();showMom()}}
@@ -43,7 +43,7 @@ function box(){var c=FREE?0:RUN&&RUN.over?RUN.n:RUN?Math.min(MAXC,RUN.n+(NOW>=0?
 function flyToCart(l,i,n){var el=document.querySelector('.st[data-l="'+l+'"][data-i="'+i+'"]');if(!el)return;var r=el.getBoundingClientRect(),c=cv.getBoundingClientRect(),g=document.createElement('div');g.innerHTML=ic(n);g.style.cssText='position:fixed;z-index:6;width:30px;height:30px;left:'+(r.left+r.width/2-15)+'px;top:'+(r.top+r.height/2-15)+'px;transition:transform .36s ease-in,opacity .36s';document.body.appendChild(g);gone[l+','+i]=1;var tx=c.left+c.width*.42-(r.left+r.width/2),ty=c.bottom-34-(r.top+r.height/2);requestAnimationFrame(function(){requestAnimationFrame(function(){g.style.transform='translate('+tx+'px,'+ty+'px) scale(.5)';g.style.opacity='.2'})});setTimeout(function(){g.remove()},380);setTimeout(buildBoard,60)}
 function spill(){G.sp=3;for(var i=0;i<idx;i++)SPILL.push({n:T.need[i],x:0,y:-26,vx:18+Math.random()*70,vy:-70-Math.random()*60,r:Math.random()*6})}
 function resetCart(){SPILL=[];sel=firstRoute();PK={};gone={};$('go').textContent=pv()?'Roll':'Check out';NOW=-1;G.p=0;G.tip=-1;idx=0;$('n').textContent=0;dirty=true}
-function nextCart(){resetCart();if(!FREE&&!DEMO){RUN.sel=null;RUN.pk={};save()}box();say('Start again from the top.',best?'Best so far: '+best+' of 8.':'Pick one item in every row.');ready();buildBoard()}
+function nextCart(){resetCart();if(!FREE){RUN.sel=null;RUN.pk={};save()}box();say('Start again from the top.',best?'Best so far: '+best+' of 8.':'Pick one item in every row.');ready();buildBoard()}
 /* A reload in the middle of a roll can't win back the cart: the route is judged as it stood. */
 function settle(){if(!RUN.roll)return;delete RUN.roll;var s=RUN.sel||firstRoute(),c=0;for(var l=1;l<=8;l++){if(T.t[l+','+s[l]]===T.need[l-1])c++;else break}RUN.b=Math.max(RUN.b,c);if(c===8){RUN.cl=(RUN.cl||0)+1;if((RUN.rd||1)>=ROUNDS)record(true);else{RUN.wait=1;save()}}else if(RUN.n>=MAXC){record(false)}else{RUN.sel=null;RUN.pk={};save()}}
 function fillStudy(){$('ol').innerHTML=T.list.map(function(n,k){return '<li><i>'+(k+1)+'</i>'+ic(n)+nmz(n)+'</li>'}).join('');$('surp').textContent='Round '+((RUN&&RUN.rd)||1)+' of '+ROUNDS+' · '+Math.round(SMS()/1000)+' seconds. '+(T.kind==='mom'?CUR.texter+' may text you.':T.kind==='sale'?'Watch for a sale.':'Check the dates.')}
@@ -52,18 +52,18 @@ function setup(d){clearInterval(clkT);clearTimeout(recT);anim=null;busy=false;FR
  if(RUN.over){lock=true;var sh=RUN.win||RUN.saw;if(sh){sel=T.sol.slice();PK={};for(var k=1;k<=8;k++)PK[k]=1;$('n').textContent=8}else PK={};$('go').textContent='See receipt';$('go').disabled=false;say(RUN.win?'Checked out!':RUN.saw?'Here’s the route that worked.':'Your score is locked.',RUN.win?'All 8 in order.':RUN.saw?'':'Open the receipt to keep playing.');box();buildBoard();return}
  box();ready();var R=reach();if(RUN.n)say('Cart '+(RUN.n+1)+' of '+MAXC+'.',best?'Best so far: '+best+' of 8.':'Pick one item in every row.');else if(R>1&&R<9)say('Row '+R+' is open.','Pick the next item on your list.');else if(R===9)say('Route set.','Tap PAY to check out.');else say('Row 1 is open.','Each pick opens the next row.');buildBoard()}
 function openStudy(ms){$('study').hidden=false;$('ready').textContent='Ready to shop';$('clkb').style.transform='scaleX('+ms/SMS()+')';clk('clkb',ms,closeStudy,SMS())}
-function closeStudy(){clearInterval(clkT);$('study').hidden=true;if(DEMO)return;RUN.sd=1;tOn=Date.now();save();size();if(T.kind==='sale'&&!RUN.pc.m&&!pv()){RUN.pc.m=1;save();showMom()}}
+function closeStudy(){clearInterval(clkT);$('study').hidden=true;RUN.sd=1;tOn=Date.now();save();size();if(T.kind==='sale'&&!RUN.pc.m&&!pv()){RUN.pc.m=1;save();showMom()}}
 /* Come into the day's game. The 15 seconds are counted from the first look, so a reload never shows the list longer. */
 function enter(){if(RUN.over){recT=setTimeout(showDone,200);return}if(pv()&&RUN.pv){only('gate');loadMore();return}if(!RUN.st){RUN.st=Date.now();save();if(!PAST&&!TESTK&&(RUN.rd||1)===1)checkIn('play');openStudy(SMS());return}if(!RUN.sd){var left=SMS()-(Date.now()-RUN.st);if(left>300){openStudy(left);return}RUN.sd=1;save()}tOn=Date.now();if(RUN.pc.m&&!RUN.pc.mo&&!pv())showMom()}
-function fin(ok){busy=false;delete RUN.roll;if(DEMO){DEMO.done=1;box();return}if(FREE){if(ok)lock=true;$('go').textContent=ok?'See receipt':'Next cart';$('go').disabled=false;box();return}
+function fin(ok){busy=false;delete RUN.roll;if(FREE){if(ok)lock=true;$('go').textContent=ok?'See receipt':'Next cart';$('go').disabled=false;box();return}
  if(ok&&(RUN.rd||1)<ROUNDS){RUN.cl=(RUN.cl||0)+1;RUN.wait=1;save();$('go').textContent='Next round';$('go').disabled=false;box();say('Round '+RUN.rd+' cleared!','Next list: '+Math.round(STUDY[RUN.rd]/1000)+' seconds.');return}
- if(ok||RUN.n>=MAXC){if(ok)RUN.cl=(RUN.cl||0)+1;lock=true;$('go').textContent='See receipt';$('go').disabled=false;record(ok);box();recT=setTimeout(function(){if(!FREE&&!DEMO&&$('study').hidden&&!anyOpen())showDone()},1800);return}
+ if(ok||RUN.n>=MAXC){if(ok)RUN.cl=(RUN.cl||0)+1;lock=true;$('go').textContent='See receipt';$('go').disabled=false;record(ok);box();recT=setTimeout(function(){if(!FREE&&$('study').hidden&&!anyOpen())showDone()},1800);return}
  RUN.sel=null;RUN.pk={};save();$('go').textContent='Next cart';$('go').disabled=false;box()}
 function nextRound(){pause();advance();T=makeR(dayNo(DAY),dow(DAY),RUN.rd);best=0;resetCart();box();fillStudy();save();say('Round '+RUN.rd+' of '+ROUNDS+'.','Each pick opens the next row.');ready();buildBoard();RUN.st=Date.now();save();openStudy(SMS())}
 function anyOpen(){return [].some.call(document.querySelectorAll('.sheet'),function(s){return !s.hidden})}
 function go(){var lb=$('go').textContent;if(busy)return;if(lb==='Next cart')return nextCart();if(lb==='See receipt')return showDone();if(lb==='Next round')return nextRound();var PV=pv();busy=true;$('go').disabled=true;if(!PV&&!FREE){RUN.n++;RUN.tot=(RUN.tot||0)+1;RUN.roll=1;save()}NOW=0;box();idx=0;G.p=0;G.tip=-1;gone={};$('n').textContent=0;buildBoard();say('Rolling…','');var seg=1,hold=.25;anim=function(dt){if(hold>0){hold-=dt;return}var d=seg-G.p;G.p+=Math.min(d,Math.max(.9,d*3.2)*dt*1.4);if(G.p<seg-.002)return;G.p=seg;if(seg===9){NOW=9;buildBoard();anim=null;play('win');say(FREE?'Checked out! Score stays locked.':'Checked out!',FREE?'All 8 in order.':'All 8 in order.');fin(true);return}
   var it=T.t[seg+','+sel[seg]],ok=it===T.need[seg-1];NOW=seg;buildBoard();if(!ok){anim=null;G.tip=0;play('bad');var inl=T.need.indexOf(it)>=0;spill();say(inl?'Not yet! That comes later.':'That’s not on your list.','Row '+seg+': '+nmz(it)+'. '+idx+' in the cart.');if(PV){return pvEnd()}fin(false);return}
-  idx=seg;best=Math.max(best,idx);if(!FREE&&!DEMO){RUN.b=Math.max(RUN.b,idx)}$('n').textContent=idx;play('pick');flyToCart(seg,sel[seg],it);say('Got '+nmz(it)+'.',idx+' of 8 so far');seg++;hold=.4;if(PV&&seg>PV_ROWS){anim=null;pvEnd()}}}
+  idx=seg;best=Math.max(best,idx);if(!FREE){RUN.b=Math.max(RUN.b,idx)}$('n').textContent=idx;play('pick');flyToCart(seg,sel[seg],it);say('Got '+nmz(it)+'.',idx+' of 8 so far');seg++;hold=.4;if(PV&&seg>PV_ROWS){anim=null;pvEnd()}}}
 /* Preview: the cart stops after the free rows, then the Plus offer. Nothing is recorded, and buying Plus starts the day's first cart. */
 function pvEnd(){busy=false;RUN.pv=1;save();recT=setTimeout(function(){only('gate');loadMore()},1300)}
 /* results: one store a day; Archive days count but are marked late and stay out of the streak */
@@ -86,19 +86,19 @@ function checkIn(kind){if(!store.get(TERMS,'')||TESTK)return;var u=store.json('r
  var body={fields:{first:T2(u.first),last:T2(day),days:I(u.days),v:T2(VERSION),opens:I(u.opens),plays:I(u.plays),done:I(st.played),wins:I(st.wins),stars:I(st.stars),streak:I(st.cur),best:I(st.max),terms:T2(store.get(TERMS,'').slice(0,10)),desk:{booleanValue:innerWidth>=820},code:T2(inviteCode()),t:I(Date.now()),o:Mp(u.o),p:Mp(u.p),r:Mp(u.r)}};
  if(window.RG_TEST){window.__body=body;(window.__bodies=window.__bodies||[]).push(kind);return}
  try{fetch('https://firestore.googleapis.com/v1/projects/'+FB_PROJ+'/databases/(default)/documents/'+GAME+'_devices/'+devId()+'?key='+FB_KEY,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),keepalive:true}).catch(function(){})}catch(e){}}
-/* demo: a guided walkthrough on one fixed store. Tap Next at each step. */
-var DS=[{r:function(){fillStudy();$('clkb').style.transform='';$('study').hidden=false},t:function(){return 'Study <b>8 items</b>. You get 17 seconds, then 12, then 8. Remember the order.'}},
- {r:function(){$('study').hidden=true;size();setPick(1,T.sol[1]);setPick(2,T.sol[2]);play('tap');buildBoard();say('Row 3 is open.','Pick the next item on your list.')},t:function(){return 'Tap one item in each row, in list order. Each pick opens the next row.'}},
- {r:function(){var w=kids(2,T.sol[2]).filter(function(j){return j!==T.sol[3]})[0];setPick(3,w);for(var k=4;k<=8;k++)PK[k]=1;$('go').textContent='Check out';buildBoard();go()},w:function(){return DEMO.done},t:function(){return 'A wrong item tips the cart. Here row 3 was wrong.'}},
- {r:function(){DEMO.done=0;nextCart();sel=T.sol.slice();for(var k=1;k<=8;k++)PK[k]=1;$('go').disabled=false;buildBoard();go()},w:function(){return DEMO.done},t:function(){return 'All 8 in order: round cleared! There are <b>3 rounds</b>, with <b>2 carts</b> each. Each round cleared earns a star.'}},
- {r:function(){$('momw').textContent='Mom';$('momt').textContent='Swap the Carrot for Pepper.';$('mom').hidden=false;play('text')},t:function(){return 'In round 1, Mom texts a swap. Follow it.'}},
- {r:function(){$('mom').hidden=true;noteShow('On sale!','Milk is on sale. Get it instead of Eggs.')},t:function(){return 'Later rounds can open with a sale that changes your list.'}},
- {r:function(){noteShow('Expired!','Your Eggs expired. Go back and exchange it for Milk.',1)},t:function(){return 'Or an item expires after you pick it. Go back and fix your route.'}},
- {r:function(){$('nt').hidden=true},t:function(){return 'One store a day, the same for everyone. Good luck!'}}];
-function stopDemo(){if(!DEMO)return;DEMO=null;anim=null;busy=false;hideOverlays();$('demoBar').hidden=true;$('demoBlock').hidden=true;setup(DAY)}
-function startDemo(){stopDemo();pause();closeAll();size();DEMO={i:-1,done:0};setStore('grocery');for(var n=1;;n++){T=make(n,0);if(T.mode==='pc')break}RUN=fresh();RUN.n=0;FREE=false;KEEP=null;lock=false;best=0;resetCart();$('noLabel').textContent='Demo';$('dateLabel').textContent='';box();say('Row 1 is open.','Each pick opens the next row.');$('demoBar').hidden=false;$('demoBlock').hidden=false;buildBoard();dnext()}
-function dnext(){if(!DEMO)return;DEMO.i++;if(DEMO.i>=DS.length){cover();return}var s=DS[DEMO.i];$('demoStep').textContent='Demo · '+(DEMO.i+1)+' of '+DS.length;$('demoNext').disabled=true;$('demoNext').textContent=DEMO.i===DS.length-1?'Done':'Next';if(s.r)s.r();var wait=function(){if(!DEMO)return;if(!s.w||s.w()){$('demoText').innerHTML=s.t();$('demoNext').disabled=false}else setTimeout(wait,150)};setTimeout(wait,s.r?400:60)}
-$('demoNext').onclick=dnext;$('demoSkip').onclick=cover;$('helpDemo').onclick=startDemo;
+/* demo: Try it with a coach. A tiny practice store with the real tiles, always grocery. Three moves, nothing saved, no check-ins. */
+/*DEMOJS*/
+var DMO={list:['Apple','Milk','Bread'],rows:[null,['Apple','Egg'],['Pear','Milk','Carrot'],['Bread','Cheese']],w:[1,2,3,2,1],pick:[0,0,1,0,0]};
+function dmIc(n){return '<svg viewBox="0 0 100 100" aria-hidden="true">'+flat(STORES.grocery.I[n])+'</svg>'}
+function dmKids(l,i){return (DMO.w[l+1]>DMO.w[l]?[i,i+1]:[i-1,i]).filter(function(j){return j>=0&&j<DMO.w[l+1]})}
+function rgBoard(stage){var el=document.createElement('div'),was=0,P=DMO.pick;el.className='rgP';el.innerHTML='<div class="rgL"><small>List</small>'+DMO.list.map(function(n,i){return '<span>'+(i+1)+'.'+dmIc(n)+n+'</span>'}).join('')+'</div><div id="rgB"></div><div class="tix"><div class="nums"><div><small>In cart</small><b id="rgN">0</b></div><div><small>List</small><b>3</b></div></div><div class="r2"><b id="rgM"></b><span id="rgM2"></span></div></div>';stage.appendChild(el);var bd=el.querySelector('#rgB');
+ function draw(n){var w=bd.clientWidth,h=bd.clientHeight-4,tw=Math.min(84,w/3.9),th=Math.min(36,h/5-6),gy=(h-th)/4,gx=w/3.5,reach=Math.min(n+2,4),pk=function(l){return l===0||l===4&&n>=2||l<4&&l<reach},pos=function(l,i){return [w/2+(i-(DMO.w[l]-1)/2)*gx,th/2+l*gy]},o='<svg class="l">',l,i;
+  for(l=0;l<4;l++)for(i=0;i<DMO.w[l];i++)dmKids(l,i).forEach(function(j){var a=pos(l,i),b=pos(l+1,j),on=pk(l)&&pk(l+1)&&P[l]===i&&P[l+1]===j;o+='<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="'+(on?'#e8a817':'var(--line)')+'" stroke-width="'+(on?5:2)+'" stroke-linecap="round"/>'});o+='</svg>';
+  for(l=0;l<=4;l++)for(i=0;i<DMO.w[l];i++){var q=pos(l,i),fx=l===0||l===4,on2=!fx&&pk(l)&&P[l]===i,hd=!fx&&l>reach,off=!fx&&!hd&&l>1&&l<=reach&&!on2&&dmKids(l-1,P[l-1]).indexOf(i)<0,nm=fx?'':DMO.rows[l][i];o+='<button type="button" tabindex="-1" class="st'+(on2?' on':'')+(hd?' hid':'')+(off?' off':'')+(l===4&&n===2?' pay':'')+(n>=3&&on2?' pa':'')+(fx?' fx':'')+'" data-l="'+l+'" data-i="'+i+'" style="left:'+q[0]+'px;top:'+q[1]+'px;width:'+(fx?96:tw)+'px;height:'+th+'px">'+(fx?(l?'PAY':'CART'):hd?'?':dmIc(nm)+'<span>'+nm+'</span>')+'</button>'}
+  bd.innerHTML=o;el.querySelector('#rgN').textContent=n>=3?3:0;el.querySelector('#rgM').textContent=n>=3?'Checked out!':n===2?'Route set.':'Row '+(n+2)+' is open.';el.querySelector('#rgM2').textContent=n>=3?'All 3 in order.':n===2?'Tap PAY to check out.':'Pick the next item on your list.'}
+ return {to:function(n){if(n>was)play(n<3?'tap':'pick');was=n;draw(n)},tgt:function(n){draw(n);return n<2?bd.querySelector('.st[data-l="'+(n+2)+'"][data-i="'+P[n+2]+'"]'):bd.querySelector('.st[data-l="4"]')},win:function(){}}}
+function startDemo(){store.set('rg-offer','1');var on=tOn,t0=Date.now(),mo=new MutationObserver(function(){if($('smDemo'))return;mo.disconnect();if(on&&tOn===on)tOn+=Date.now()-t0});smDemo({name:NAME,moves:[{cap:'Study your list in order, then it goes away. Tap one item in every row. We picked Apple. Tap Milk.',nudge:'Milk is next on your list. Tap Milk.'},{cap:'Each pick opens the next row. Bread is next. Tap Bread.',nudge:'Bread is next on your list. Tap Bread.'},{cap:'Route set. Tap PAY and your cart rolls your route.',nudge:'Tap PAY to check out.'}],win:'Get all 8 items in order and you clear the round. A wrong item tips the cart. You have 2 carts a round, and each round cleared earns a star.',play:function(){start(TODAY)},board:rgBoard});mo.observe(document.body,{childList:true})}
+$('helpDemo').onclick=startDemo;
 $('go').onclick=go;$('dPlay').onclick=freePlay;$('dRoute').onclick=askRoute;$('ready').onclick=closeStudy;$('momGo').onclick=function(){$('mom').hidden=true;RUN.pc.mo=1;save()};$('ntGo').onclick=function(){$('nt').hidden=true;RUN.pc.mo=1;save();if(T.kind==='exp')say('Go back and fix your route.','Tap the row to exchange it.')};
 /* store window: gray aisle, hanging signs, the cart */
 function rr(a,b,c,d,r){Y.beginPath();Y.moveTo(a+r,b);Y.arcTo(a+c,b,a+c,b+d,r);Y.arcTo(a+c,b+d,a,b+d,r);Y.arcTo(a,b+d,a,b,r);Y.arcTo(a,b,a+c,b,r);Y.closePath()}

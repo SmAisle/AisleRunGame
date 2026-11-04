@@ -43,3 +43,6 @@ Fields: first, last, days, v, opens, plays, done, wins, stars, streak, best, ter
 
 ## v1.0 (Nov 3)
 First real version, from Route test v0.15.
+
+## v1.8 (Nov 4)
+New demo: Try it with a coach, the shared smAisle frame. Three real moves on a tiny practice store, always grocery, with a finger, a nudge on a wrong tap, and a You're ready popup. It replaces the old walkthrough. How to Play and the first-time prompt open it. `source/demo-frame.js` and `.css` are copies of the shared frame; do not edit them here.
