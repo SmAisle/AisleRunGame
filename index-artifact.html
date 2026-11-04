@@ -145,7 +145,7 @@ html[data-mode=navy] .go{border-color:var(--btn)}
 (function(){
 /* Settings. PLUS_GAME false = standard game with no preview. STORES_LIVE = the stores that run in the daily rotation; the others open only with ?store=. */
 var PLUS_GAME=true,PV_ROWS=3,STORES_LIVE=['grocery'],MAXC=2,ROUNDS=3,STUDY=[17000,12000,8000],SHARE_URL='https://smaisle.app/AisleRunGame/';
-var VERSION='1.5',VDATE='Nov 3',NAME='smAisle Run',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
+var VERSION='1.6',VDATE='Nov 3',NAME='smAisle Run',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 var VTXT='v'+VERSION+' · '+VDATE,$=function(i){return document.getElementById(i)};
 var WEB=/github\.io$|smaisle\.app$/.test(location.hostname);
 var store={get:function(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},json:function(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v===null?d:v}catch(e){return d}},put:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -405,7 +405,7 @@ function setPick(l,i){sel[l]=i;PK[l]=1;for(var k=l+1;k<=8;k++){PK[k]=0;sel[k]=ki
 function tapTile(l,i){if(DEMO)return;var lb=$('go').textContent;if(l===9&&!busy&&!$('go').disabled&&/Check out|See receipt/.test(lb)){go();return}if(busy||lock||l===0||l===9)return;var PV=pv();if(PV&&l>PV_ROWS)return;if(lb==='Next round')return;if(lb==='Next cart')nextCart();if(l>reach())return;if(l>1&&!adj(l-1,sel[l-1],i))return;setPick(l,i);if(!FREE){RUN.sel=sel;RUN.pk=PK;save()}play('tap');ready();buildBoard();if(PV&&reach()>PV_ROWS)say('Preview: first '+PV_ROWS+' rows.','Tap Roll to see how you did.');else if(reach()<9)say('Row '+reach()+' is open.','Pick the next item on your list.');else say('Route set.','Tap PAY to check out.');
  if(PV||FREE)return;
  if(T.kind==='mom'&&l===3&&!RUN.pc.m){RUN.pc.m=1;save();showMom()}
- if(T.kind==='exp'&&l===T.swap.row+2&&!RUN.pc.m){RUN.pc.m=1;save();showMom()}}
+ if(T.kind==='exp'&&l===T.swap.row+2&&!RUN.pc.m&&T.t[T.swap.row+','+sel[T.swap.row]]===T.swap.from){RUN.pc.m=1;save();showMom()}}
 function noteShow(h,m,bad){$('ntH').textContent=h;$('ntH').style.cssText='padding-right:0;background:'+(bad?'var(--red)':'#ffe27a')+';color:'+(bad?'#fff':'#1a1814')+';padding:6px 8px;border-radius:4px';$('ntM').textContent=m;$('nt').hidden=false;play('text')}
 function showMom(){if(T.kind==='sale'){noteShow('On sale!',nmz(T.swap.to)+' is on sale. Get it instead of '+nmz(T.swap.from)+'.');return}if(T.kind==='exp'){noteShow('Expired!','Your '+nmz(T.swap.from)+' expired. Go back and exchange it for '+nmz(T.swap.to)+'.',1);return}$('momw').textContent=CUR.texter;$('moma').textContent=CUR.texter.charAt(0);$('momt').textContent='Swap the '+nmz(T.swap.from)+' for '+nmz(T.swap.to)+'.';$('mom').hidden=false;play('text')}
 var clkT=null;function clk(id,ms,done,total){var bar=$(id),t0=performance.now(),tt=total||ms;clearInterval(clkT);clkT=setInterval(function(){var f=(ms-(performance.now()-t0))/tt;bar.style.transform='scaleX('+Math.max(0,f)+')';if(f<=0){clearInterval(clkT);done()}},60)}
