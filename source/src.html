@@ -103,7 +103,7 @@ html[data-mode=navy] .go{border-color:var(--btn)}
   <a id="coverHub" href="https://smaisle.app/daily/" hidden>‹ smAisle Daily</a>
   <div class="mh"><h1>{{NAME}}</h1><div><span id="cvDate"></span><span id="cvNo"></span></div></div>
   <canvas id="cvArt" aria-hidden="true"></canvas>
-  <p class="tag">Study the list. Route your cart. Get all 8 items in order before your carts run out.</p>
+  <p class="tag">Study the list. Route your cart. Three rounds, less time each round.</p>
   <div id="cvStats" hidden></div>
   <button class="go" id="coverGo">Play today’s store</button>
   <div class="lk"><button id="coverPast">Archive</button><button id="coverStats">Stats</button><button id="coverHow">How to Play</button></div>
@@ -111,7 +111,7 @@ html[data-mode=navy] .go{border-color:var(--btn)}
 </div></div>
 
 <div class="sheet" id="help" hidden><div class="card"><button class="x" data-close aria-label="Close">✕</button><h2>How to Play</h2>
-  <ol class="how"><li>You get <b>15 seconds</b> to study a list of <b>8 items</b>, in order.</li><li>Then the list goes away. Tap one item in every row to build your <b>route</b>, row 1 to row 8. Each pick opens the next row.</li><li>Tap <b>PAY</b>. Your cart rolls the route and picks up each item in order. A wrong item tips the cart.</li><li>You have <b>3 carts</b>. First cart is 3 stars, second is 2, third is 1.</li><li>Some days Mom texts a swap. Other days there are price checks.</li><li>One store a day, the same for everyone. Monday is easiest, Sunday is hardest.</li></ol>
+  <ol class="how"><li><b>3 rounds</b>, a new list of <b>8 items</b> each. Study it in order for <b>17 seconds</b>, then <b>12</b>, then <b>8</b>.</li><li>Then the list goes away. Tap one item in every row to build your <b>route</b>, row 1 to row 8. Each pick opens the next row.</li><li>Tap <b>PAY</b>. Your cart rolls the route and picks up each item in order. A wrong item tips the cart.</li><li>You have <b>2 carts</b> each round. Run out and the game ends. Each round cleared earns a <b>star</b>.</li><li>Some days Mom texts a swap. Other days there are price checks.</li><li>One store a day, the same for everyone. Monday is easiest, Sunday is hardest.</li></ol>
   <button class="go" id="helpDemo">Watch the demo</button><div class="ver" id="helpVer"></div></div></div>
 
 <div class="sheet" id="menu" hidden><div class="card"><button class="x" data-close aria-label="Close">✕</button><h2>Menu</h2>
@@ -136,7 +136,7 @@ html[data-mode=navy] .go{border-color:var(--btn)}
   <button class="go alt" id="dBoard">Back to the store</button><div class="ver" id="dNext"></div>
   <div class="more" hidden><h3>More smAisle games</h3><div class="moreRow"></div></div></div></div>
 
-<div class="sheet" id="gate" hidden><div class="card" style="text-align:center"><h2 style="padding-right:0" id="gateH">That was your free look</h2><p style="margin:0">Get the whole store, all 3 carts and the Archive with smAisle Daily Plus.</p><button class="go" id="gateBuy" style="text-transform:none;letter-spacing:.02em">Get smAisle Daily Plus</button><button class="go y" id="gateHub">‹ smAisle Daily</button><button class="go alt" id="gateBack" hidden>Back to the menu</button><div class="more" hidden><h3>More smAisle games</h3><div class="moreRow"></div></div></div></div>
+<div class="sheet" id="gate" hidden><div class="card" style="text-align:center"><h2 style="padding-right:0" id="gateH">That was your free look</h2><p style="margin:0">Get all 3 rounds and the Archive with smAisle Daily Plus.</p><button class="go" id="gateBuy" style="text-transform:none;letter-spacing:.02em">Get smAisle Daily Plus</button><button class="go y" id="gateHub">‹ smAisle Daily</button><button class="go alt" id="gateBack" hidden>Back to the menu</button><div class="more" hidden><h3>More smAisle games</h3><div class="moreRow"></div></div></div></div>
 
 <div class="sheet" id="offer" hidden><div class="card" style="text-align:center"><h2 style="padding-right:0">First time here?</h2><p style="margin:0">Want a quick demo?</p><button class="go" id="ofYes">Show me</button><button class="go alt" id="ofNo">Skip</button></div></div>
 
@@ -146,8 +146,8 @@ html[data-mode=navy] .go{border-color:var(--btn)}
 <script>
 (function(){
 /* Settings. PLUS_GAME false = standard game with no preview. STORES_LIVE = the stores that run in the daily rotation; the others open only with ?store=. */
-var PLUS_GAME=true,PV_ROWS=3,STORES_LIVE=['grocery'],MAXC=3,STUDY_MS=15000,SHARE_URL='https://smaisle.app/AisleRunGame/';
-var VERSION='1.2',VDATE='Nov 3',NAME='{{NAME}}',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
+var PLUS_GAME=true,PV_ROWS=3,STORES_LIVE=['grocery'],MAXC=2,ROUNDS=3,STUDY=[17000,12000,8000],SHARE_URL='https://smaisle.app/AisleRunGame/';
+var VERSION='1.3',VDATE='Nov 3',NAME='{{NAME}}',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 var VTXT='v'+VERSION+' · '+VDATE,$=function(i){return document.getElementById(i)};
 var WEB=/github\.io$|smaisle\.app$/.test(location.hostname);
 var store={get:function(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},json:function(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v===null?d:v}catch(e){return d}},put:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
