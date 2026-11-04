@@ -148,7 +148,7 @@ html[data-mode=navy] .go{border-color:var(--btn)}
 (function(){
 /* Settings. PLUS_GAME false = standard game with no preview. STORES_LIVE = the stores that run in the daily rotation; the others open only with ?store=. */
 var PLUS_GAME=true,PV_ROWS=3,STORES_LIVE=['grocery'],MAXC=2,ROUNDS=3,STUDY=[17000,12000,8000],SHARE_URL='https://smaisle.app/AisleRunGame/';
-var VERSION='1.4',VDATE='Nov 3',NAME='{{NAME}}',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
+var VERSION='1.5',VDATE='Nov 3',NAME='{{NAME}}',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 var VTXT='v'+VERSION+' · '+VDATE,$=function(i){return document.getElementById(i)};
 var WEB=/github\.io$|smaisle\.app$/.test(location.hostname);
 var store={get:function(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},json:function(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v===null?d:v}catch(e){return d}},put:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -177,7 +177,8 @@ function play(n,v){if(store.get('rg-sound','on')==='off')return;try{SFX[n](v)}ca
 /*PUZZLE*/
 /*ART*/
 /* ?store=hardware or ?store=pet: Jeff's test view of a store that isn't live. Nothing is saved, recorded or sent. */
-var TESTK=(function(){var k=new URLSearchParams(location.search).get('store');return k&&Object.prototype.hasOwnProperty.call(STORES,k)&&STORES_LIVE.indexOf(k)<0?k:''})();
+var TRY=(function(){var k=new URLSearchParams(location.search).get('try');return ['mom','sale','exp'].indexOf(k)>=0?k:''})(),TRYN=TRY?Math.floor(Math.random()*90000)+1:0;
+var TESTK=(function(){var k=new URLSearchParams(location.search).get('store');if(TRY)return 'grocery';return k&&Object.prototype.hasOwnProperty.call(STORES,k)&&STORES_LIVE.indexOf(k)<0?k:''})();
 /*GAME*/
 /* screens */
 var back=null;function only(id){if(id&&id!=='cover'&&!$('cover').hidden)back='cover';if(!id||id==='cover')back=null;document.querySelectorAll('.sheet').forEach(function(s){s.hidden=s.id!==id})}

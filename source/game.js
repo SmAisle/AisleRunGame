@@ -4,8 +4,8 @@ var cv=$('sc'),Y=cv.getContext('2d'),W=340,H=100;
 var skey=function(d){return 'rg-d_'+d};
 function fresh(){return {s:CUR.key,rd:1,cl:0,tot:0,n:0,b:0,ms:0,pen:{},pc:{}}}
 function SMS(){return STUDY[((RUN&&RUN.rd)||1)-1]}
-function kindOf(n,rd){if(rd===1)return {kind:'mom',a:5,b:7};var k=(n%2?['sale','exp']:['exp','sale'])[rd-2];return k==='sale'?{kind:'sale',a:2,b:3}:{kind:'exp',a:4,b:5,exp:1}}
-function makeR(n,d,rd){return make(n+(rd-1)*100000,d,kindOf(n,rd))}
+function kindOf(n,rd){if(TRY)rd=0;if(rd===1||TRY==='mom')return {kind:'mom',a:5,b:7};var k=TRY||(n%2?['sale','exp']:['exp','sale'])[rd-2];return k==='sale'?{kind:'sale',a:2,b:3}:{kind:'exp',a:4,b:5,exp:1}}
+function makeR(n,d,rd){return make(n+TRYN+(rd-1)*100000,d,kindOf(n,rd))}
 function advance(){RUN.rd=(RUN.rd||1)+1;RUN.n=0;RUN.b=0;RUN.st=0;RUN.sd=0;RUN.sel=null;RUN.pk={};RUN.pen={};RUN.pc={};delete RUN.wait}
 function liveStore(n){return STORES_LIVE[(n-1)%STORES_LIVE.length]}
 function save(){if(DEMO||FREE||TESTK||!RUN)return;store.put(skey(DAY),RUN)}

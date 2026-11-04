@@ -145,7 +145,7 @@ html[data-mode=navy] .go{border-color:var(--btn)}
 (function(){
 /* Settings. PLUS_GAME false = standard game with no preview. STORES_LIVE = the stores that run in the daily rotation; the others open only with ?store=. */
 var PLUS_GAME=true,PV_ROWS=3,STORES_LIVE=['grocery'],MAXC=2,ROUNDS=3,STUDY=[17000,12000,8000],SHARE_URL='https://smaisle.app/AisleRunGame/';
-var VERSION='1.4',VDATE='Nov 3',NAME='smAisle Run',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
+var VERSION='1.5',VDATE='Nov 3',NAME='smAisle Run',GAME='rg',TERMS='rg-terms',EPOCH='2026-11-03',FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 var VTXT='v'+VERSION+' · '+VDATE,$=function(i){return document.getElementById(i)};
 var WEB=/github\.io$|smaisle\.app$/.test(location.hostname);
 var store={get:function(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},json:function(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v===null?d:v}catch(e){return d}},put:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -370,15 +370,16 @@ function coverArt(g,w,h){var INK='#1a1814',f=h*.5/100;g.fillStyle='#f4efe1';g.fi
  cartMark(g,w*.31,y-(45*f*1.05),f*1.05)}
 
 /* ?store=hardware or ?store=pet: Jeff's test view of a store that isn't live. Nothing is saved, recorded or sent. */
-var TESTK=(function(){var k=new URLSearchParams(location.search).get('store');return k&&Object.prototype.hasOwnProperty.call(STORES,k)&&STORES_LIVE.indexOf(k)<0?k:''})();
+var TRY=(function(){var k=new URLSearchParams(location.search).get('try');return ['mom','sale','exp'].indexOf(k)>=0?k:''})(),TRYN=TRY?Math.floor(Math.random()*90000)+1:0;
+var TESTK=(function(){var k=new URLSearchParams(location.search).get('store');if(TRY)return 'grocery';return k&&Object.prototype.hasOwnProperty.call(STORES,k)&&STORES_LIVE.indexOf(k)<0?k:''})();
 /* play state. RUN is what gets saved for the day; KEEP holds the locked result during Keep playing. */
 var T,sel=null,PK={},busy=false,NOW=-1,lock=false,G={p:0,tip:-1,sp:0},idx=0,best=0,RUN=null,KEEP=null,FREE=false,DEMO=null,DAY=TODAY,PAST=false,tOn=0,gone={},SPILL=[],RS={},anim=null,last=0,dirty=true,recT=null;
 var cv=$('sc'),Y=cv.getContext('2d'),W=340,H=100;
 var skey=function(d){return 'rg-d_'+d};
 function fresh(){return {s:CUR.key,rd:1,cl:0,tot:0,n:0,b:0,ms:0,pen:{},pc:{}}}
 function SMS(){return STUDY[((RUN&&RUN.rd)||1)-1]}
-function kindOf(n,rd){if(rd===1)return {kind:'mom',a:5,b:7};var k=(n%2?['sale','exp']:['exp','sale'])[rd-2];return k==='sale'?{kind:'sale',a:2,b:3}:{kind:'exp',a:4,b:5,exp:1}}
-function makeR(n,d,rd){return make(n+(rd-1)*100000,d,kindOf(n,rd))}
+function kindOf(n,rd){if(TRY)rd=0;if(rd===1||TRY==='mom')return {kind:'mom',a:5,b:7};var k=TRY||(n%2?['sale','exp']:['exp','sale'])[rd-2];return k==='sale'?{kind:'sale',a:2,b:3}:{kind:'exp',a:4,b:5,exp:1}}
+function makeR(n,d,rd){return make(n+TRYN+(rd-1)*100000,d,kindOf(n,rd))}
 function advance(){RUN.rd=(RUN.rd||1)+1;RUN.n=0;RUN.b=0;RUN.st=0;RUN.sd=0;RUN.sel=null;RUN.pk={};RUN.pen={};RUN.pc={};delete RUN.wait}
 function liveStore(n){return STORES_LIVE[(n-1)%STORES_LIVE.length]}
 function save(){if(DEMO||FREE||TESTK||!RUN)return;store.put(skey(DAY),RUN)}
